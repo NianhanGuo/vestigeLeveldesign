@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BLACKOUT — Level Design Document</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
+
+  :root {
+    --bg: #0d0d0f;
+    --bg2: #141417;
+    --bg3: #1b1b1f;
+    --bg4: #242428;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #e8e8e4;
+    --text2: #9b9b94;
+    --text3: #5c5c58;
+    --accent: #c8a96e;
+    --accent2: #8fa87a;
+    --accent3: #7b9ab8;
+    --danger: #b86e6e;
+    --mono: 'Space Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.7;
+    min-height: 100vh;
+    display: flex;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    min-height: 100vh;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-header {
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .game-title {
+    font-family: var(--mono);
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .game-subtitle {
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 4px;
+    font-family: var(--mono);
+  }
+
+  .sidebar-section {
+    padding: 16px 0 8px;
+  }
+
+  .sidebar-section-label {
+    padding: 0 20px 8px;
+    font-size: 10px;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text3);
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 20px;
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text2);
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+
+  .nav-item.active {
+    background: var(--bg3);
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text3);
+    flex-shrink: 0;
+  }
+
+  .nav-item.active .nav-dot { background: var(--accent); }
+
+  .nav-sub {
+    padding: 5px 20px 5px 36px;
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--text3);
+    transition: all 0.15s;
+  }
+  .nav-sub:hover { color: var(--text2); }
+  .nav-sub.active { color: var(--accent); }
+
+  .chapter-badge {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    margin-left: auto;
+  }
+
+  .nav-item.active .chapter-badge { border-color: var(--accent); color: var(--accent); }
+
+  /* MAIN CONTENT */
+  .main {
+    margin-left: 260px;
+    flex: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topbar {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .breadcrumb {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .breadcrumb span { color: var(--accent); }
+
+  .save-btn {
+    margin-left: auto;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: opacity 0.15s;
+  }
+
+  .save-btn:hover { opacity: 0.85; }
+
+  .save-btn.saved { background: var(--accent2); }
+
+  .content {
+    padding: 40px 48px;
+    max-width: 900px;
+  }
+
+  /* PAGE SECTIONS */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* COMPONENTS */
+  .page-title {
+    font-family: var(--mono);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .page-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .tag-chapter { background: rgba(200,169,110,0.12); color: var(--accent); border: 1px solid rgba(200,169,110,0.25); }
+  .tag-time { background: rgba(123,154,184,0.12); color: var(--accent3); border: 1px solid rgba(123,154,184,0.25); }
+  .tag-death { background: rgba(184,110,110,0.12); color: var(--danger); border: 1px solid rgba(184,110,110,0.25); }
+  .tag-nodeath { background: rgba(143,168,122,0.12); color: var(--accent2); border: 1px solid rgba(143,168,122,0.25); }
+
+  .section-block {
+    margin-bottom: 32px;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--text3);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .scene-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .scene-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg4);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .scene-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .scene-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .scene-duration {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  .scene-toggle {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+    transition: transform 0.2s;
+  }
+
+  .scene-toggle.open { transform: rotate(90deg); }
+
+  .scene-body {
+    padding: 16px;
+    display: none;
+  }
+
+  .scene-body.open { display: block; }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .info-cell {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 12px;
+  }
+
+  .info-cell-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text3);
+    margin-bottom: 4px;
+  }
+
+  .info-cell-value {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .subsection {
+    margin-bottom: 20px;
+  }
+
+  .subsection-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--accent3);
+    margin-bottom: 10px;
+  }
+
+  .prose {
+    color: var(--text2);
+    font-size: 13px;
+    line-height: 1.8;
+    margin-bottom: 12px;
+  }
+
+  /* DIALOGUE */
+  .dialogue-block {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+  }
+
+  .dialogue-block.npc { border-left-color: var(--accent3); }
+  .dialogue-block.choice { border-left-color: var(--accent2); background: rgba(143,168,122,0.04); }
+  .dialogue-block.note { border-left-color: var(--text3); background: rgba(255,255,255,0.02); }
+
+  .dialogue-speaker {
+    font-family: var(--mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    margin-bottom: 4px;
+  }
+
+  .dialogue-block.npc .dialogue-speaker { color: var(--accent3); }
+  .dialogue-block .dialogue-speaker { color: var(--accent); }
+  .dialogue-block.choice .dialogue-speaker { color: var(--accent2); }
+
+  .dialogue-text {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .dialogue-block.note .dialogue-text { font-style: normal; color: var(--text2); }
+
+  .choice-options {
+    margin-top: 8px;
+    padding-left: 12px;
+  }
+
+  .choice-opt {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .choice-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent2);
+    min-width: 20px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .choice-text {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ITEMS */
+  .item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .item-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .item-row:last-child { border-bottom: none; }
+
+  .item-name { color: var(--text); font-weight: 500; min-width: 160px; flex-shrink: 0; }
+  .item-desc { color: var(--text2); flex: 1; }
+  .item-effect { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
+  .item-effect.pos { background: rgba(143,168,122,0.15); color: var(--accent2); }
+  .item-effect.neg { background: rgba(184,110,110,0.15); color: var(--danger); }
+  .item-effect.req { background: rgba(123,154,184,0.15); color: var(--accent3); }
+
+  /* MECHANIC CARDS */
+  .mechanic-box {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .mechanic-title {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  .trust-meter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+  }
+
+  .trust-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--bg);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .trust-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--danger) 0%, var(--accent) 60%, var(--accent2) 100%);
+    border-radius: 3px;
+    width: 100%;
+  }
+
+  .trust-label { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+
+  /* FLOW */
+  .flow-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .flow-step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 8px 0;
+  }
+
+  .flow-step-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    min-width: 24px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .flow-step-content { flex: 1; }
+  .flow-step-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .flow-step-note { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  .flow-connector {
+    width: 1px;
+    height: 12px;
+    background: var(--border2);
+    margin-left: 11px;
+  }
+
+  /* LOCATION GRID */
+  .location-grid {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .loc-chip {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 12px;
+    cursor: default;
+    transition: border-color 0.15s;
+  }
+
+  .loc-chip.interactive { border-color: var(--accent3); color: var(--accent3); }
+  .loc-chip.restricted { border-color: var(--danger); color: var(--danger); opacity: 0.7; }
+  .loc-chip.key { border-color: var(--accent); color: var(--accent); }
+
+  /* EDIT AREA */
+  .edit-area {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .edit-toolbar {
+    background: var(--bg4);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .edit-title-input {
+    background: transparent;
+    border: none;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text);
+    flex: 1;
+    outline: none;
+  }
+
+  .edit-title-input::placeholder { color: var(--text3); }
+
+  .edit-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 4px 8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .edit-btn:hover { border-color: var(--border2); color: var(--text); }
+  .edit-btn.primary { border-color: var(--accent); color: var(--accent); }
+  .edit-btn.primary:hover { background: rgba(200,169,110,0.12); }
+
+  .edit-content {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 16px;
+    font-family: var(--sans);
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.8;
+    resize: vertical;
+    min-height: 200px;
+    outline: none;
+  }
+
+  .edit-content::placeholder { color: var(--text3); }
+
+  .scene-editor-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .scene-editor-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(200,169,110,0.1);
+    border: 1px solid rgba(200,169,110,0.2);
+    border-radius: 3px;
+    padding: 3px 8px;
+  }
+
+  /* STATUS */
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 4px;
+    font-family: var(--mono);
+  }
+
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text3); }
+  .status-dot.saved { background: var(--accent2); }
+  .status-dot.unsaved { background: var(--accent); }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px; top: 0; bottom: 0;
+    width: 1px;
+    background: var(--border2);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 0 0 16px;
+  }
+
+  .timeline-dot {
+    position: absolute;
+    left: -20px;
+    top: 5px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+  }
+
+  .timeline-dot.trigger { border-color: var(--danger); }
+
+  .timeline-time {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent3);
+    margin-bottom: 4px;
+  }
+
+  .timeline-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* ALERT BOXES */
+  .alert {
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    font-size: 12px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .alert-icon { font-family: var(--mono); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .alert-text { flex: 1; }
+
+  .alert-warn { background: rgba(200,169,110,0.08); border: 1px solid rgba(200,169,110,0.2); color: var(--accent); }
+  .alert-danger { background: rgba(184,110,110,0.08); border: 1px solid rgba(184,110,110,0.2); color: var(--danger); }
+  .alert-info { background: rgba(123,154,184,0.08); border: 1px solid rgba(123,154,184,0.2); color: var(--accent3); }
+  .alert-success { background: rgba(143,168,122,0.08); border: 1px solid rgba(143,168,122,0.2); color: var(--accent2); }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  /* TOOLTIP NOTE */
+  .footnote {
+    font-size: 11px;
+    color: var(--text3);
+    font-style: italic;
+    margin-top: 4px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .sidebar { width: 220px; }
+    .main { margin-left: 220px; }
+    .content { padding: 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="game-title">BLACKOUT</div>
+    <div class="game-subtitle">Level Design Document v0.1</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Overview</div>
+    <div class="nav-item active" onclick="navigate('overview', this)">
+      <div class="nav-dot"></div>
+      Project Overview
+    </div>
+    <div class="nav-item" onclick="navigate('characters', this)">
+      <div class="nav-dot"></div>
+      Characters & Items
+    </div>
+    <div class="nav-item" onclick="navigate('mechanics', this)">
+      <div class="nav-dot"></div>
+      Core Mechanics
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Chapters</div>
+
+    <div class="nav-item" onclick="navigate('ch1', this)">
+      <div class="nav-dot"></div>
+      Chapter 1
+      <span class="chapter-badge">CH1</span>
+    </div>
+    <div class="nav-sub" onclick="navigate('ch1', this)">Scene 1 — 酒馆内</div>
+    <div class="nav-sub" onclick="navigate('ch1', this)">Scene 2 — 酒馆下班</div>
+    <div class="nav-sub" onclick="navigate('ch1', this)">Scene 3 — 街道回家</div>
+
+    <div class="nav-item" onclick="navigate('ch2', this)">
+      <div class="nav-dot"></div>
+      Chapter 2
+      <span class="chapter-badge">CH2</span>
+    </div>
+    <div class="nav-sub" onclick="navigate('ch2', this)">Scene 1 — 公寓探索</div>
+    <div class="nav-sub" onclick="navigate('ch2', this)">Scene 2 — 警察问话</div>
+    <div class="nav-sub" onclick="navigate('ch2', this)">Scene 3 — 继续探索</div>
+    <div class="nav-sub" onclick="navigate('ch2', this)">Scene 4 — 发现尸体</div>
+    <div class="nav-sub" onclick="navigate('ch2', this)">Scene 5 — 藏尸</div>
+
+    <div class="nav-item" onclick="navigate('ch3', this)">
+      <div class="nav-dot"></div>
+      Chapter 3
+      <span class="chapter-badge">CH3</span>
+    </div>
+    <div class="nav-sub" onclick="navigate('ch3', this)">Scene 1 — 手机响起</div>
+    <div class="nav-sub" onclick="navigate('ch3', this)">Scene 2 — 晚餐对话</div>
+
+    <div class="nav-item" onclick="navigate('ch4', this)">
+      <div class="nav-dot"></div>
+      Chapter 4
+      <span class="chapter-badge">CH4</span>
+    </div>
+    <div class="nav-sub" onclick="navigate('ch4', this)">进入方式</div>
+    <div class="nav-sub" onclick="navigate('ch4', this)">干扰方式</div>
+    <div class="nav-sub" onclick="navigate('ch4', this)">杀人方式</div>
+    <div class="nav-sub" onclick="navigate('ch4', this)">第三幕</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Pending Chapters</div>
+    <div class="nav-item" onclick="navigate('ch5-edit', this)">
+      <div class="nav-dot"></div>
+      Chapter 5
+      <span class="chapter-badge" style="color:#5c5c58;border-color:#2a2a2a">TBD</span>
+    </div>
+    <div class="nav-item" onclick="navigate('ch6-edit', this)">
+      <div class="nav-dot"></div>
+      Chapter 6
+      <span class="chapter-badge" style="color:#5c5c58;border-color:#2a2a2a">TBD</span>
+    </div>
+    <div class="nav-item" onclick="navigate('ch7-edit', this)">
+      <div class="nav-dot"></div>
+      Chapter 7
+      <span class="chapter-badge" style="color:#5c5c58;border-color:#2a2a2a">TBD</span>
+    </div>
+    <div class="nav-item" onclick="navigate('ch8-edit', this)">
+      <div class="nav-dot"></div>
+      Chapter 8
+      <span class="chapter-badge" style="color:#5c5c58;border-color:#2a2a2a">TBD</span>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb" id="breadcrumb">BLACKOUT / <span>Overview</span></div>
+    <button class="save-btn" id="saveBtn" onclick="saveAll()">Save All</button>
+  </div>
+
+  <div class="content">
+
+    <!-- ===== OVERVIEW ===== -->
+    <div class="page active" id="page-overview">
+      <div class="page-title">Project Overview</div>
+      <div class="page-meta">
+        <span class="tag tag-chapter">Level Design Doc</span>
+        <span class="tag tag-time">v0.1 Draft</span>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Game Summary</div>
+        <p class="prose">BLACKOUT is a narrative mystery game in which the player controls Mateo Collins — a man who wakes up with amnesia only to discover a body in his car. The game unfolds across multiple chapters, each representing a single day or night. Players navigate dialogue trees, manage a Police Trust meter, and make choices that permanently alter narrative branches.</p>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Chapter Timeline</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">Chapter 1 — Day 1 night → Day 2 early morning</div>
+            <div class="timeline-desc">Mateo 在酒馆喝酒，与 NPC 互动，得知邻居 Victor 失踪，之后晕倒失忆。苏醒后找到回家的路。</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">Chapter 2 — Day 2 early morning (02:15 – 04:40)</div>
+            <div class="timeline-desc">Mateo 在公寓探索，经历警察问话，发现尸体，决定藏尸。</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">Chapter 3 — Day 2 morning → night (11:00 – 19:30)</div>
+            <div class="timeline-desc">Mateo 与 Ethan 共进晚餐，被发现失忆，根据对话选项揭露不同程度的真相。</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot trigger"></div>
+            <div class="timeline-time">Chapter 4 — Day before murder (flashback / time jump)</div>
+            <div class="timeline-desc">Mateo 穿越回 Victor 死前，需要重新完成杀人并获取证据录像带。包含进入方式、干扰、杀人、不在场证明四幕。</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot" style="border-color:var(--text3)"></div>
+            <div class="timeline-time">Chapters 5–8 — TBD</div>
+            <div class="timeline-desc">尚未写入，见下方各章节的编辑区域。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Global Systems</div>
+        <div class="mechanic-box">
+          <div class="mechanic-title">Police Trust Meter（警察信任值）</div>
+          <div class="trust-meter">
+            <div class="trust-label">0</div>
+            <div class="trust-bar"><div class="trust-fill"></div></div>
+            <div class="trust-label">5</div>
+          </div>
+          <p class="prose" style="font-size:12px;margin-bottom:8px;">初始值为 5。到 0 时游戏结束（Game Over）。</p>
+          <div class="item-list">
+            <div class="item-row">
+              <span class="item-name">回答矛盾问题</span>
+              <span class="item-desc">对警察盘问回答错误或前后矛盾</span>
+              <span class="item-effect neg">-1</span>
+            </div>
+            <div class="item-row">
+              <span class="item-name">承认杀人（对话）</span>
+              <span class="item-desc">对话中直接承认杀人</span>
+              <span class="item-effect neg">-3</span>
+            </div>
+            <div class="item-row">
+              <span class="item-name">选择自首</span>
+              <span class="item-desc">游戏结束，获得成就：诚实凶手</span>
+              <span class="item-effect neg">-5</span>
+            </div>
+            <div class="item-row">
+              <span class="item-name">藏尸失误</span>
+              <span class="item-desc">每次未完成必要清理步骤</span>
+              <span class="item-effect neg">-1 each</span>
+            </div>
+            <div class="item-row">
+              <span class="item-name">购买香烟给警察</span>
+              <span class="item-desc">从杂货店购买后与警察互动</span>
+              <span class="item-effect pos">+1</span>
+            </div>
+            <div class="item-row">
+              <span class="item-name">使用石灰粉</span>
+              <span class="item-desc">埋尸时正确使用石灰粉</span>
+              <span class="item-effect pos">+1</span>
+            </div>
+            <div class="item-row">
+              <span class="item-name">投放金属废品</span>
+              <span class="item-desc">埋尸时混淆金属探测</span>
+              <span class="item-effect pos">+1</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="mechanic-box">
+          <div class="mechanic-title">Time System（游戏内时间）</div>
+          <p class="prose" style="font-size:12px;">左下角边框显示游戏内时间。时间推进方式因章节不同而变化——有些章节通过物品互动触发，有些章节时间自动流逝。</p>
+          <div class="alert alert-info">
+            <div class="alert-icon">!</div>
+            <div class="alert-text">第四章时间系统有根本变化：时间按固定频率自动流逝（倒计时），不再依赖互动触发。详见 Chapter 4 文档。</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CHARACTERS ===== -->
+    <div class="page" id="page-characters">
+      <div class="page-title">Characters & Inventory</div>
+      <div class="page-meta">
+        <span class="tag tag-chapter">Reference</span>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Core Characters</div>
+        <div class="mechanic-box">
+          <div class="mechanic-title">Mateo Collins — Protagonist (Player)</div>
+          <p class="prose" style="font-size:12px;">职业为医生（医学院背景）。Day 1 night 因不明原因晕倒并失忆。性格设定存在双面性：外表理性克制，内心深处有强烈的保护欲和黑暗面。</p>
+          <div class="alert alert-info" style="font-size:11px;">
+            <div class="alert-icon">?</div>
+            <div class="alert-text">玩家在第二章可通过探索公寓，拼凑出 Mateo 与 Victor 和 Ethan 的过去关系。许多物品是叙事线索，非功能道具。</div>
+          </div>
+        </div>
+
+        <div class="mechanic-box">
+          <div class="mechanic-title">Ethan — Childhood Friend</div>
+          <p class="prose" style="font-size:12px;">Mateo 的青梅竹马。曾遭 Victor 欺压并被录像勒索。在第三章于餐厅与 Mateo 会面，表情设计有六种状态（疑惑、微笑、惊讶、伤心、沉默、生气、面无表情）。常态表情：小幅度微笑。</p>
+        </div>
+
+        <div class="mechanic-box">
+          <div class="mechanic-title">Victor Reyes — Victim</div>
+          <p class="prose" style="font-size:12px;">402-403 的邻居，脾气暴躁，有前科，曾用录像勒索 Ethan。游戏开始时已失踪四天，尸体在 Mateo 车的后备箱内被发现。第四章中 Mateo 需穿越回其死前再次将其杀死。</p>
+        </div>
+
+        <div class="mechanic-box">
+          <div class="mechanic-title">Officer Austin — Police</div>
+          <p class="prose" style="font-size:12px;">第二章负责调查 Victor 失踪案的警察。在 03:00 上门盘问 Mateo。是警察信任值系统的核心触发角色。</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Chapter 1 — Starting Inventory</div>
+        <div class="item-list">
+          <div class="item-row">
+            <span class="item-name">钱包</span>
+            <span class="item-desc">内含 $50，购酒后金额减少。可拖动给酒保购买酒水。</span>
+          </div>
+          <div class="item-row">
+            <span class="item-name">水晶纸糖果</span>
+            <span class="item-desc">一颗，叙事物品，与 Ethan 有关联（第三章中 Ethan 会给同款）。</span>
+          </div>
+          <div class="item-row">
+            <span class="item-name">老照片</span>
+            <span class="item-desc">两个小男孩相拥大笑，黄发男孩略显拘谨，黑发男孩瘦弱但开心。</span>
+          </div>
+          <div class="item-row">
+            <span class="item-name">家门钥匙</span>
+            <span class="item-desc">可拖至 405 号房打开家门。Chapter 1 结束触发器。</span>
+            <span class="item-effect req">Key Item</span>
+          </div>
+          <div class="item-row">
+            <span class="item-name">车钥匙</span>
+            <span class="item-desc">后续章节使用。</span>
+          </div>
+          <div class="item-row">
+            <span class="item-name">手机</span>
+            <span class="item-desc">Chapter 1 无法解锁。密码 0417（生日），Chapter 2 解锁后开启 Messages。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MECHANICS ===== -->
+    <div class="page" id="page-mechanics">
+      <div class="page-title">Core Mechanics Reference</div>
+      <div class="page-meta">
+        <span class="tag tag-chapter">System Design</span>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Interaction System</div>
+        <p class="prose">玩家通过点击或拖动与世界互动。物品可从 Inventory（物品栏）拖至 NPC 或场景热点以触发事件（例：拖动钱包给酒保，拖动钥匙至门上）。</p>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Dialogue Choice Architecture</div>
+        <p class="prose">对话选项通常有 2-4 个分支，部分分支有前提条件（如已购买酒水）。选项结果影响后续对话、警察信任值或成就触发，不可回退。</p>
+        <div class="alert alert-warn">
+          <div class="alert-icon">!</div>
+          <div class="alert-text">NPC 对话顺序在 Chapter 1 中非强制，但玩家需与所有三位 NPC 均完成至少一次互动，才会触发 Mateo 晕倒事件。</div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Memory Fragment Mechanic (Chapter 2, Scene 4)</div>
+        <p class="prose">发现尸体后，Mateo 陷入眩晕并触发回忆片段。玩家需按正确时间顺序拼凑三个记忆碎片并 Submit。</p>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-step-num">1</div>
+            <div class="flow-step-content">
+              <div class="flow-step-name">展示三个记忆碎片</div>
+              <div class="flow-step-note">玩家靠感觉排列先后顺序</div>
+            </div>
+          </div>
+          <div class="flow-connector"></div>
+          <div class="flow-step">
+            <div class="flow-step-num">2</div>
+            <div class="flow-step-content">
+              <div class="flow-step-name">提交排列 (Submit)</div>
+              <div class="flow-step-note">正确 → 进入藏尸环节并透露重要信息</div>
+            </div>
+          </div>
+          <div class="flow-connector"></div>
+          <div class="flow-step">
+            <div class="flow-step-num">3a</div>
+            <div class="flow-step-content">
+              <div class="flow-step-name">第一次失败</div>
+              <div class="flow-step-note">进入自首剧情（视为死亡）</div>
+            </div>
+          </div>
+          <div class="flow-connector"></div>
+          <div class="flow-step">
+            <div class="flow-step-num">3b</div>
+            <div class="flow-step-content">
+              <div class="flow-step-name">第二次失败</div>
+              <div class="flow-step-note">无剧情，直接死亡，进入下次尝试</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CHAPTER 1 ===== -->
+    <div class="page" id="page-ch1">
+      <div class="page-title">Chapter 1</div>
+      <div class="page-meta">
+        <span class="tag tag-chapter">CH 1</span>
+        <span class="tag tag-time">Day 1 Night → Day 2 Early Morning</span>
+        <span class="tag tag-nodeath">No Death Condition</span>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Chapter Overview</div>
+        <p class="prose">主角 Mateo Collins 在酒馆喝酒，与周围 NPC 互动并得知邻居 Victor 失踪。在完成所有 NPC 互动后晕倒失忆，苏醒后酒馆已关门，需要找到回家的路并成功进入公寓。</p>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Time Structure</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">21:34</div>
+            <div class="timeline-desc">游戏开始</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">22:25 – 22:40</div>
+            <div class="timeline-desc">完成所有 NPC 互动后，Mateo 晕倒（最多 48 分钟游戏内时间）</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">01:45</div>
+            <div class="timeline-desc">Mateo 苏醒（酒保提示已经两点钟）</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-dot"></div>
+            <div class="timeline-time">02:25</div>
+            <div class="timeline-desc">到达公寓，章节结束。开启第二章时自动校准到 2:25。</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Scenes</div>
+
+        <!-- Scene 1 -->
+        <div class="scene-card">
+          <div class="scene-header" onclick="toggleScene(this)">
+            <span class="scene-num">S1</span>
+            <span class="scene-title">酒馆内</span>
+            <span class="scene-duration">~15 min</span>
+            <span class="scene-toggle">▶</span>
+          </div>
+          <div class="scene-body">
+            <div class="info-grid">
+              <div class="info-cell"><div class="info-cell-label">Location</div><div class="info-cell-value">酒馆内部</div></div>
+              <div class="info-cell"><div class="info-cell-label">BGM</div><div class="info-cell-value">安静爵士乐</div></div>
+              <div class="info-cell"><div class="info-cell-label">SFX</div><div class="info-cell-value">抽烟声 / 喝酒声</div></div>
+              <div class="info-cell"><div class="info-cell-label">Trigger to End</div><div class="info-cell-value">与所有 NPC 互动≥1次</div></div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">Mechanic — 购买酒水（前提条件）</div>
+              <p class="prose">酒保出现酒水单，玩家需从物品栏拖动钱包给酒保完成购买（$50 起始），购买后方可解锁酒保的主要对话分支。</p>
+              <div class="alert alert-warn">
+                <div class="alert-icon">!</div>
+                <div class="alert-text">若未购买酒水即询问"any news lately?"，酒保仅回复："sir, I have no clue what you are talking about."，不展开剧情对话。</div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">Bartender Dialogue</div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Bartender</div>
+                <div class="dialogue-text">"Hello sir, what can I get for you?"</div>
+              </div>
+
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Player Choice</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"Can I get…" → 点击酒水单任意酒款 → 付款（拖动钱包）</span></div>
+                  <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"Nothing." → 退出对话，无事发生</span></div>
+                  <div class="choice-opt"><span class="choice-label">C</span><span class="choice-text">"Hey, any news lately?" → 购酒前触发拒绝，购酒后触发 Victor 失踪对话</span></div>
+                </div>
+              </div>
+
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Bartender（购酒后）</div>
+                <div class="dialogue-text">"You heard about Victor? He went missing four days ago."</div>
+              </div>
+
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo Response</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"That name doesn't ring a bell." → Bartender: "Huh. Thought it would've made it to your ears by now…"</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"Victor… remind me. What's the story?"</span></div>
+                </div>
+              </div>
+
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Bartender</div>
+                <div class="dialogue-text">"Who would've thought? Loud, nasty guy like that—ran his mouth too much, and now he's the one no one can find. Pathetic, really."</div>
+              </div>
+
+              <div class="dialogue-block note">
+                <div class="dialogue-speaker">Designer Note</div>
+                <div class="dialogue-text">酒保后续内容描述 Victor 的暴力行为、与常客起冲突、警察介入。对话以 "something about the way he vanished doesn't sit right" 收尾，营造悬疑基调。完整对话见原始文件第一章。</div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">NPC 1 — Bar Regular（Victor 失踪话题）</div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">NPC 1</div>
+                <div class="dialogue-text">"Have you heard about the news? Victor went missing just a few days ago."</div>
+              </div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo Response</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Is that so?" → NPC: "Yeah, well… can't say I'm surprised."</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"I don't give a fuck about that asshole." → NPC: "What'd he do to you?"</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">NPC 2 — Smoker（借火互动）</div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">NPC 2</div>
+                <div class="dialogue-text">"Hey man, do you happen to have a lighter?"</div>
+              </div>
+              <p class="prose">Mateo 递出打火机，引发关于"这周好漫长"的闲聊。两条分支分别通向关于"城市压力"的隐晦铺垫（为后续城市氛围做渲染）。</p>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">NPC 3 — Bar Patron（座位误会）</div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="dialogue-text">"Hey, excuse me — is anyone sitting here?"</div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">NPC 3</div>
+                <div class="dialogue-text">"You look fine, but sorry — not my type. Not in the mood for meeting another guy tonight."</div>
+              </div>
+              <p class="prose">后续对话分支涉及轻度反驳，均以轻描淡写结束。此互动主要功能：增加场景人气感，不影响主线。</p>
+            </div>
+
+            <div class="dialogue-block note">
+              <div class="dialogue-speaker">Scene End Trigger</div>
+              <div class="dialogue-text">与 Bartender、NPC1、NPC2、NPC3 均完成至少一次互动后，Mateo 晕倒。BGM 产生杂音并随黑屏减弱。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scene 2 -->
+        <div class="scene-card">
+          <div class="scene-header" onclick="toggleScene(this)">
+            <span class="scene-num">S2</span>
+            <span class="scene-title">酒馆下班 — 酒保催促离开</span>
+            <span class="scene-duration">~2 min</span>
+            <span class="scene-toggle">▶</span>
+          </div>
+          <div class="scene-body">
+            <div class="info-grid">
+              <div class="info-cell"><div class="info-cell-label">BGM</div><div class="info-cell-value">爵士乐停止</div></div>
+              <div class="info-cell"><div class="info-cell-label">SFX</div><div class="info-cell-value">安静擦酒瓶声</div></div>
+              <div class="info-cell"><div class="info-cell-label">Time</div><div class="info-cell-value">~01:45</div></div>
+            </div>
+            <div class="dialogue-block npc">
+              <div class="dialogue-speaker">Bartender</div>
+              <div class="dialogue-text">"Hey, man — it's late. We're closing up."</div>
+            </div>
+            <div class="dialogue-block choice">
+              <div class="dialogue-speaker">Mateo Response</div>
+              <div class="choice-options">
+                <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Oh, damn. Sorry about that — totally lost track of time."</span></div>
+                <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"I totally passed out. What time is it?" → Bartender: "Pushing 2AM."</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scene 3 -->
+        <div class="scene-card">
+          <div class="scene-header" onclick="toggleScene(this)">
+            <span class="scene-num">S3</span>
+            <span class="scene-title">街道 — 找路回家</span>
+            <span class="scene-duration">~10 min</span>
+            <span class="scene-toggle">▶</span>
+          </div>
+          <div class="scene-body">
+            <div class="info-grid">
+              <div class="info-cell"><div class="info-cell-label">Objective</div><div class="info-cell-value">用钥匙打开 405 号房</div></div>
+              <div class="info-cell"><div class="info-cell-label">Time</div><div class="info-cell-value">~02:00</div></div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">Street Layout（从左至右）</div>
+              <div class="location-grid">
+                <div class="loc-chip">酒吧（可进入但被赶出）</div>
+                <div class="loc-chip restricted">402 — 邻居休息中</div>
+                <div class="loc-chip restricted">403 — Victor 家（警戒线封锁）</div>
+                <div class="loc-chip interactive">404 — 可敲门（提示）</div>
+                <div class="loc-chip key">405 — Mateo 家 🗝️</div>
+                <div class="loc-chip">406 — 无人在家</div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">404 邻居对话（重要提示）</div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Neighbor (404)</div>
+                <div class="dialogue-text">"Oh—Mateo? Everything alright?"</div>
+              </div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="dialogue-text">"I... forgot which unit was mine for a second."</div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Neighbor (404)</div>
+                <div class="dialogue-text">"That's odd. You live right next door."</div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">酒吧重新进入（三条赶出台词）</div>
+              <div class="prose">"Why are you still here, man? We're already closed." / "You good? We closed up a while ago. Can you head out?" / "Seriously? You planning to sleep here or what?"</div>
+            </div>
+
+            <div class="dialogue-block note">
+              <div class="dialogue-speaker">Chapter End</div>
+              <div class="dialogue-text">将家门钥匙拖至 405 号房门上，成功开门后黑屏，进入第二章。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CHAPTER 2 ===== -->
+    <div class="page" id="page-ch2">
+      <div class="page-title">Chapter 2</div>
+      <div class="page-meta">
+        <span class="tag tag-chapter">CH 2</span>
+        <span class="tag tag-time">Day 2 · 02:15 – 04:40+</span>
+        <span class="tag tag-death">Death: Police Trust = 0</span>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Chapter Overview</div>
+        <p class="prose">Mateo 回到公寓，在家中自由探索。03:00 警察上门盘问。之后在车库发现尸体，面临自首或藏尸的抉择。选择藏尸后进行尸体清理和埋葬，信任值判定决定是否过关。</p>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Time Structure</div>
+        <div class="timeline">
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">02:15</div><div class="timeline-desc">到家。与每个物品互动后时间推进 5 分钟。</div></div>
+          <div class="timeline-item"><div class="timeline-dot trigger"></div><div class="timeline-time">03:00</div><div class="timeline-desc">警察按响门铃，强制开启对话。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">03:05</div><div class="timeline-desc">警察问话结束，时间停止流逝，可自由探索全屋。</div></div>
+          <div class="timeline-item"><div class="timeline-dot trigger"></div><div class="timeline-time">03:30</div><div class="timeline-desc">点击车库尸体触发 Cut Scene，时间自动跳至 03:30。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">03:55</div><div class="timeline-desc">每完成一个清理步骤时间+5 分钟。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">04:10</div><div class="timeline-desc">驾车抵达树林（埋尸地点），共 6 个步骤，每步+5 分钟。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">04:40</div><div class="timeline-desc">完成埋尸，可选择睡觉触发信任度判定。</div></div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Scenes</div>
+
+        <!-- Scene 1 -->
+        <div class="scene-card">
+          <div class="scene-header" onclick="toggleScene(this)">
+            <span class="scene-num">S1</span>
+            <span class="scene-title">公寓探索（一楼）</span>
+            <span class="scene-duration">~15 min</span>
+            <span class="scene-toggle">▶</span>
+          </div>
+          <div class="scene-body">
+            <div class="subsection">
+              <div class="subsection-title">可探索物品（一楼客厅/餐厅）</div>
+              <div class="item-list">
+                <div class="item-row"><span class="item-name">初中毕业照片</span><span class="item-desc">后排一胖男孩头部有破损，叙事线索</span></div>
+                <div class="item-row"><span class="item-name">电视 + 遥控器</span><span class="item-desc">三个频道：天气预报、本地新闻（Victor 失踪）、广告</span></div>
+                <div class="item-row"><span class="item-name">医学书籍</span><span class="item-desc">几本医学方面的书，角色背景暗示</span></div>
+                <div class="item-row"><span class="item-name">日历</span><span class="item-desc">4月3日有手术，4月17日是 Mateo 生日</span></div>
+                <div class="item-row"><span class="item-name">手机</span><span class="item-desc">锁屏显示今天为 4月3日，密码 0417。解锁后可用 Messages，目前无重要信息。</span><span class="item-effect req">解锁密码</span></div>
+                <div class="item-row"><span class="item-name">Ethan 的照片</span><span class="item-desc">叙事物品</span></div>
+                <div class="item-row"><span class="item-name">桌上玻璃罐</span><span class="item-desc">内含许多水晶糖，与 Ethan 水晶糖呼应</span></div>
+                <div class="item-row"><span class="item-name">冰箱内容物</span><span class="item-desc">鸡蛋、低脂酸奶、午餐肉、金枪鱼、腌橄榄、小布丁（便签："这个味道感觉你会喜欢 :)"）</span></div>
+              </div>
+            </div>
+            <div class="alert alert-info">
+              <div class="alert-icon">!</div>
+              <div class="alert-text">时间到 03:00 时，必须开门与警察互动（Scene 2）。Scene 4 的物品（车库）在此阶段不可提前互动。</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scene 2 -->
+        <div class="scene-card">
+          <div class="scene-header" onclick="toggleScene(this)">
+            <span class="scene-num">S2</span>
+            <span class="scene-title">警察问话</span>
+            <span class="scene-duration">~5 min</span>
+            <span class="scene-toggle">▶</span>
+          </div>
+          <div class="scene-body">
+            <div class="info-grid">
+              <div class="info-cell"><div class="info-cell-label">Trust Initial</div><div class="info-cell-value">5</div></div>
+              <div class="info-cell"><div class="info-cell-label">Time Trigger</div><div class="info-cell-value">03:00</div></div>
+              <div class="info-cell"><div class="info-cell-label">Officer</div><div class="info-cell-value">Austin</div></div>
+            </div>
+
+            <div class="alert alert-warn" style="margin-bottom:16px">
+              <div class="alert-icon">!</div>
+              <div class="alert-text">教程提示在此弹出：回答错误可能导致警察信任下降，到 0 时游戏结束。烟可增加信任值，可在杂货店购买。</div>
+            </div>
+
+            <div class="dialogue-block npc">
+              <div class="dialogue-speaker">Officer Austin</div>
+              <div class="dialogue-text">"Good morning, sir. Sorry to disturb you. Are you Mateo Collins?"</div>
+            </div>
+            <div class="dialogue-block choice">
+              <div class="dialogue-speaker">Mateo Response</div>
+              <div class="choice-options">
+                <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"…Yes, I am. Is something wrong?" — 推荐回答</span></div>
+                <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"Uh… I guess so. Who's asking?"</span></div>
+                <div class="choice-opt"><span class="choice-label">C</span><span class="choice-text">"Fuck off. It's three a.m." → 警察警告，无信任扣减但留下记录</span></div>
+              </div>
+            </div>
+
+            <div class="dialogue-block npc">
+              <div class="dialogue-speaker">Officer Austin</div>
+              <div class="dialogue-text">"He's been missing for four days. Have you seen him recently, or do you have any idea where he might've gone?"</div>
+            </div>
+            <div class="dialogue-block choice">
+              <div class="dialogue-speaker">Mateo Response</div>
+              <div class="choice-options">
+                <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"I haven't seen him this month…" → 安全</span></div>
+                <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"He wasn't exactly known for being easy to get along with…" → 安全</span></div>
+                <div class="choice-opt"><span class="choice-label">C</span><span class="choice-text">"He always had visitors, but that's none of my business." → 安全</span></div>
+                <div class="choice-opt"><span class="choice-label">D !</span><span class="choice-text">"Oh… I killed him…" → 信任 -3，被列为监控对象</span></div>
+              </div>
+            </div>
+
+            <div class="dialogue-block npc">
+              <div class="dialogue-speaker">Officer Austin — 关系确认</div>
+              <div class="dialogue-text">"What's your relationship with him exactly?"</div>
+            </div>
+            <div class="dialogue-block choice">
+              <div class="dialogue-speaker">Mateo Response</div>
+              <div class="choice-options">
+                <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"We used to be in the same middle school…" → 安全，警察认为"有趣"</span></div>
+                <div class="choice-opt"><span class="choice-label">B !</span><span class="choice-text">"We're neighbors. That's all." → 信任 -1（警方已查到共同中学记录）</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scene 3 -->
+        <div class="scene-card">
+          <div class="scene-header" onclick="toggleScene(this)">
+            <span class="scene-num">S3</span>
+            <span class="scene-title">继续探索（全屋解锁）</span>
+            <span class="scene-duration">时间不流逝</span>
+            <span class="scene-toggle">▶</span>
+          </div>
+          <div class="scene-body">
+            <div class="subsection">
+              <div class="subsection-title">一楼各区域</div>
+              <div class="item-list">
+                <div class="item-row"><span class="item-name">一楼阳台</span><span class="item-desc">栀子花（可摘）、风铃、烟头</span></div>
+                <div class="item-row"><span class="item-name">一楼厕所</span><span class="item-desc">垃圾桶内撕碎的纸、洗手台上塑胶手套、抹布</span></div>
+                <div class="item-row"><span class="item-name">一楼车库</span><span class="item-desc">Mateo 自言自语："something smells horrible here" — 触发 Scene 4 条件</span><span class="item-effect req">触发器</span></div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">二楼各区域（叙事道具为主）</div>
+              <div class="item-list">
+                <div class="item-row"><span class="item-name">主卧室</span><span class="item-desc">安眠药（半瓶）、《梦的解析》（贴满便签）、空药瓶（抗焦虑药）、无电池手电筒、医学课本（有血渍）、合照（反复折叠）、锁上的抽屉（第二章无密码）、电脑（未解锁，第二章不可用）、旧相册、门后纸条"Don't open if you're not me."</span></div>
+                <div class="item-row"><span class="item-name">卧室 2（Ethan 临时房间）</span><span class="item-desc">《麦田里的守望者》、折叠整齐的衣物、Ethan 留言："You always protect me..."、紫外线灯</span><span class="item-effect req">Key Item（藏尸用）</span></div>
+                <div class="item-row"><span class="item-name">洗衣房</span><span class="item-desc">手写衣物清单、拖把（藏尸道具）、便签"记得检查口袋"</span></div>
+                <div class="item-row"><span class="item-name">储藏间</span><span class="item-desc">布质小熊（右耳残破）、旧收音机、未标注录像带、黑色垃圾袋（一大卷）</span><span class="item-effect req">Key Item（藏尸用）</span></div>
+                <div class="item-row"><span class="item-name">衣帽间 / 衣柜</span><span class="item-desc">唇膏（抽屉内）、风衣（附耳塞/果仁包装）；衣柜底部金属小盒：Victor 剪报、Ethan 校徽、被剪碎的日记纸</span></div>
+                <div class="item-row"><span class="item-name">二楼厕所</span><span class="item-desc">断裂电动剃须刀（带血痕）、香水；马桶水箱：心理评估报告、"你不是怪物"便签、旧手链</span></div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">杂货店（可选，时间不流逝）</div>
+              <div class="item-list">
+                <div class="item-row"><span class="item-name">香烟 $5</span><span class="item-desc">用于与警察互动</span><span class="item-effect pos">信任 +1</span></div>
+                <div class="item-row"><span class="item-name">抹布 $3</span><span class="item-desc">清洁道具（若家中抹布未取）</span></div>
+                <div class="item-row"><span class="item-name">铲子 $5</span><span class="item-desc">埋尸必需道具</span><span class="item-effect req">Required</span></div>
+                <div class="item-row"><span class="item-name">耙子 $5</span><span class="item-desc">掩盖落叶痕迹</span></div>
+                <div class="item-row"><span class="item-name">电池 $2</span><span class="item-desc">可安装到无电池手电筒内</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scene 4 -->
+        <div class="scene-card">
+          <div class="scene-header" onclick="toggleScene(this)">
+            <span class="scene-num">S4</span>
+            <span class="scene-title">发现尸体 — 是否自首</span>
+            <span class="scene-duration">~5 min</span>
+            <span class="scene-toggle">▶</span>
+          </div>
+          <div class="scene-body">
+            <div class="info-grid">
+              <div class="info-cell"><div class="info-cell-label">Trigger</div><div class="info-cell-value">点击车库内尸体</div></div>
+              <div class="info-cell"><div class="info-cell-label">Time Jump</div><div class="info-cell-value">自动跳至 03:30</div></div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">Cut Scene — Mateo 内心独白</div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo（独白序列）</div>
+                <div class="dialogue-text">"What the fuck…" / "That's—no. No, it can't be. Victor…?" / "Did I… do this? …Why would I—? No. No, this doesn't make sense." / "There has to be a reason. If—if it was me, there had to be a reason…" / "Should I call the cops? What would I even say…" / "…Should I hide it? No, that's insane. But letting them in—that's the end, isn't it?" / "I need time. I need to think." / "I can't unsee this. I don't even know if I did it. But if I did… what the hell do I do now?"</div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">记忆碎片拼凑谜题</div>
+              <p class="prose">进入眩晕后，展示三个记忆碎片。玩家按时间顺序排列并 Submit。</p>
+              <div class="alert alert-danger">
+                <div class="alert-icon">!</div>
+                <div class="alert-text">第一次排列错误 → 自首剧情（死亡）。第二次错误 → 无剧情直接死亡，进入下次尝试。</div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">主要抉择</div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Player Choice</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">✗</span><span class="choice-text">自首 (Confess) — 拨打 Officer Austin → 游戏结束（成就：诚实凶手）</span></div>
+                  <div class="choice-opt"><span class="choice-label">✓</span><span class="choice-text">隐瞒 (Lie and hide) — 左上角弹出任务："hide body" → 进入 Scene 5</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scene 5 -->
+        <div class="scene-card">
+          <div class="scene-header" onclick="toggleScene(this)">
+            <span class="scene-num">S5</span>
+            <span class="scene-title">藏尸</span>
+            <span class="scene-duration">~30 min</span>
+            <span class="scene-toggle">▶</span>
+          </div>
+          <div class="scene-body">
+            <div class="subsection">
+              <div class="subsection-title">UI Layout</div>
+              <div class="info-grid">
+                <div class="info-cell"><div class="info-cell-label">右侧工具栏</div><div class="info-cell-value">必用主工具（不扣信任）</div></div>
+                <div class="info-cell"><div class="info-cell-label">左侧工具栏</div><div class="info-cell-value">附加工具（未用扣信任）</div></div>
+                <div class="info-cell"><div class="info-cell-label">顶部</div><div class="info-cell-value">分尸进度条</div></div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">正确流程 — 犯罪现场处理</div>
+              <div class="flow-steps">
+                <div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-content"><div class="flow-step-name">戴上塑胶手套</div><div class="flow-step-note">未完成 → 信任 -1</div></div></div>
+                <div class="flow-connector"></div>
+                <div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-content"><div class="flow-step-name">将尸体装入黑色垃圾袋</div><div class="flow-step-note">未完成 → 任务无法推进</div></div></div>
+                <div class="flow-connector"></div>
+                <div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-content"><div class="flow-step-name">清洁喷雾 + 抹布 + 拖把 清理血迹</div><div class="flow-step-note">三项均未使用 → 任务无法推进；每项未用 -1</div></div></div>
+                <div class="flow-connector"></div>
+                <div class="flow-step"><div class="flow-step-num">4</div><div class="flow-step-content"><div class="flow-step-name">紫外线灯检查</div><div class="flow-step-note">未完成 → 信任 -1</div></div></div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">正确流程 — 埋尸（树林，用时约 8 分钟）</div>
+              <div class="flow-steps">
+                <div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-content"><div class="flow-step-name">铲子挖坑</div><div class="flow-step-note">未完成 → 任务无法推进</div></div></div>
+                <div class="flow-connector"></div>
+                <div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-content"><div class="flow-step-name">投放黑色垃圾袋</div><div class="flow-step-note">未完成 → 任务无法推进</div></div></div>
+                <div class="flow-connector"></div>
+                <div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-content"><div class="flow-step-name">撒石灰粉</div><div class="flow-step-note">完成 → 信任 +1</div></div></div>
+                <div class="flow-connector"></div>
+                <div class="flow-step"><div class="flow-step-num">4</div><div class="flow-step-content"><div class="flow-step-name">投放金属废品</div><div class="flow-step-note">完成 → 信任 +1</div></div></div>
+                <div class="flow-connector"></div>
+                <div class="flow-step"><div class="flow-step-num">5</div><div class="flow-step-content"><div class="flow-step-name">回填泥土</div><div class="flow-step-note">未完成 → 信任 -1</div></div></div>
+                <div class="flow-connector"></div>
+                <div class="flow-step"><div class="flow-step-num">6</div><div class="flow-step-content"><div class="flow-step-name">耙子掩盖落叶痕迹</div><div class="flow-step-note">未完成 → 信任 -1</div></div></div>
+              </div>
+            </div>
+
+            <div class="mechanic-box">
+              <div class="mechanic-title">Chapter End Condition</div>
+              <p class="prose" style="font-size:12px;">回家后触发判定。警察信任 > 0 → 成功过关，进入次日。警察信任 = 0 → Game Over（成就：失败的谋杀）。</p>
+              <div class="alert alert-info" style="margin-top:8px;">
+                <div class="alert-icon">!</div>
+                <div class="alert-text">Designer Note: 若选择将尸体放进冰箱（另一选项）→ 当下更轻松，但后续每章信任 -2。</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CHAPTER 3 ===== -->
+    <div class="page" id="page-ch3">
+      <div class="page-title">Chapter 3</div>
+      <div class="page-meta">
+        <span class="tag tag-chapter">CH 3</span>
+        <span class="tag tag-time">Day 2 · 11:00 – 19:30</span>
+        <span class="tag tag-death">Death: 身份暴露 / 错误对话</span>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Chapter Overview</div>
+        <p class="prose">Mateo 醒来后可继续搜索公寓，收到 Ethan 手机消息后外出赴约共进晚餐。核心戏剧性张力：Ethan 在晚餐中逐渐发现 Mateo 失忆，但无论玩家是否试图隐瞒，Ethan 最终都知道 Mateo 失忆。道具系统可以在对话时将物品递给 Ethan 以触发额外对话分支，获取关键叙事信息。</p>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">美术需求</div>
+        <div class="mechanic-box">
+          <div class="mechanic-title">Ethan 表情变化（需美术支持）</div>
+          <div class="location-grid">
+            <div class="loc-chip">疑惑</div>
+            <div class="loc-chip">微笑</div>
+            <div class="loc-chip">惊讶</div>
+            <div class="loc-chip">伤心</div>
+            <div class="loc-chip">沉默</div>
+            <div class="loc-chip">生气</div>
+            <div class="loc-chip">面无表情</div>
+          </div>
+          <p class="prose" style="font-size:12px;margin-top:8px;">常态表情：小幅度微笑。镜头规则：第一幕 cut scene 为中景（双人），常规对话为 Ethan 近景（上半身），玩家不出镜，仅背包图标出现用于道具互动。</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Time Structure</div>
+        <div class="timeline">
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">11:00</div><div class="timeline-desc">玩家起床，自由探索。找到日历时手机消息触发（Ethan 约晚餐）。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">随时出门</div><div class="timeline-desc">玩家可随时点击"出门"，时间自动跳至 17:00。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">17:00</div><div class="timeline-desc">约会提示弹出，需驾车前往餐厅。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">17:30</div><div class="timeline-desc">到达餐厅。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">19:30</div><div class="timeline-desc">晚餐结束。</div></div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Scenes</div>
+
+        <div class="scene-card">
+          <div class="scene-header" onclick="toggleScene(this)">
+            <span class="scene-num">S1</span>
+            <span class="scene-title">手机响起 — 出发前</span>
+            <span class="scene-duration">可自由探索</span>
+            <span class="scene-toggle">▶</span>
+          </div>
+          <div class="scene-body">
+            <div class="dialogue-block npc">
+              <div class="dialogue-speaker">Ethan（短信）</div>
+              <div class="dialogue-text">"Are you heading there yet? I am on my way"</div>
+            </div>
+            <div class="dialogue-block choice">
+              <div class="dialogue-speaker">Mateo 回复选项</div>
+              <div class="choice-options">
+                <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"not yet"</span></div>
+                <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"can you sent me the address again?"</span></div>
+                <div class="choice-opt"><span class="choice-label">C !</span><span class="choice-text">"who are you" → 章节失败</span></div>
+              </div>
+            </div>
+            <div class="alert alert-warn">
+              <div class="alert-icon">!</div>
+              <div class="alert-text">左上角提示弹出："点击门以前往晚餐，或继续搜索房间"</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="scene-card">
+          <div class="scene-header" onclick="toggleScene(this)">
+            <span class="scene-num">S2</span>
+            <span class="scene-title">晚餐对话 — Ethan</span>
+            <span class="scene-duration">~2 hrs in-game</span>
+            <span class="scene-toggle">▶</span>
+          </div>
+          <div class="scene-body">
+            <div class="dialogue-block note">
+              <div class="dialogue-speaker">Designer Note — Dialogue Architecture</div>
+              <div class="dialogue-text">对话树有多条通路（以 ①②③④⑤⑥⑦ 节点标记），不同选择透露不同程度的真相。以下为主要分支骨架，完整对话见原始文件第三章。</div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">开场对话（固定）</div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Ethan</div>
+                <div class="dialogue-text">"I'm not late, am I?" (微笑)</div>
+              </div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="dialogue-text">"Right on time. You picked a quiet place."</div>
+              </div>
+              <p class="prose">对话进入日常寒暄 → 点菜 → Ethan 提起 Victor 话题，触发关键分支。</p>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">Victor 话题分支</div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Ethan</div>
+                <div class="dialogue-text">"By the way… have you heard about Victor?"</div>
+              </div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo Response</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Victor. Who's that?" → Ethan 察觉异常，逼问，最终确认失忆 → 节点 ①</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"I saw… it says he's missing." → 话题深入，涉及是否有人"消除"他 → 节点分叉</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">核心选择节点（简略）</div>
+              <div class="item-list">
+                <div class="item-row"><span class="item-name">节点 ②</span><span class="item-desc">"No matter what, you're still the person I know, Mateo. So… was it you?"</span></div>
+                <div class="item-row"><span class="item-name">节点 ③</span><span class="item-desc">"I have. I wanted him dead." → Ethan 分析道德边界 → 追问 Mateo 是否越界</span></div>
+                <div class="item-row"><span class="item-name">节点 ④</span><span class="item-desc">"No. Never." → Ethan 表示相信，但重申信任承诺</span></div>
+                <div class="item-row"><span class="item-name">节点 ⑤</span><span class="item-desc">Ethan 讲述 2008 年的血腥事件（Victor 录像勒索起因）</span></div>
+                <div class="item-row"><span class="item-name">节点 ⑥</span><span class="item-desc">"I've already buried his body." → Ethan 沉默，随后承诺保守秘密</span></div>
+                <div class="item-row"><span class="item-name">节点 ⑦</span><span class="item-desc">"It was nice seeing you today. Let's both get some sleep." → Good End</span></div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">道具触发对话（可选）</div>
+              <p class="prose">将物品从背包递给 Ethan，触发独立道具剧情，结束后回到主线选择界面。</p>
+              <div class="item-list">
+                <div class="item-row"><span class="item-name">《梦的解析》</span><span class="item-desc">Ethan: "Freud? I didn't know you were the analyzing type." → 三条 Mateo 回应，各引出 Ethan 对"欲望"和"故事"的隐晦表达</span></div>
+                <div class="item-row"><span class="item-name">合照</span><span class="item-desc">Ethan: "You still kept this… wow." → 三条 Mateo 回应，揭露对这段友谊重要程度的不同态度</span></div>
+                <div class="item-row"><span class="item-name">小瓶香水</span><span class="item-desc">Ethan: "This scent… I actually really like it." → 三条 Mateo 回应（猜香调、送他、描述成分），各有深意</span></div>
+                <div class="item-row"><span class="item-name">水晶糖</span><span class="item-desc">Ethan 主动给 Mateo → "A little sweet for the end of the world." → 三条选择，进入第四章</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CHAPTER 4 ===== -->
+    <div class="page" id="page-ch4">
+      <div class="page-title">Chapter 4</div>
+      <div class="page-meta">
+        <span class="tag tag-chapter">CH 4</span>
+        <span class="tag tag-time">Flashback — Victor 死前</span>
+        <span class="tag tag-death">Death: 时间耗尽 / 证人 / 清理失败</span>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Chapter Overview</div>
+        <p class="prose">Mateo 穿越回 Victor 死前，需要重新完成杀人并获取录像带证据。章节共分三幕：进入 Victor 家（Entry）、制造干扰并完成杀人（Kill）、制造不在场证明（Alibi）。</p>
+        <div class="alert alert-info">
+          <div class="alert-icon">!</div>
+          <div class="alert-text">时间系统在本章有根本变化：时间按固定频率自动流逝（倒计时），而非依赖物品互动触发。进入方式决定初始倒计时时长和后续证据清理难度。</div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Act 1 — 进入方式（Entry Methods）</div>
+        <div class="alert alert-warn">
+          <div class="alert-icon">!</div>
+          <div class="alert-text">UI 提示："find a way to enter Victor's house, click around to find the key."</div>
+        </div>
+
+        <div class="item-list">
+          <div class="item-row"><span class="item-name">敲门一次</span><span class="item-desc">Victor 无回应</span><span class="item-effect neg">无行动时间</span></div>
+          <div class="item-row"><span class="item-name">敲门三次</span><span class="item-desc">Victor 愤怒开门 → 进入对话选项</span><span class="item-effect pos">3 min</span></div>
+          <div class="item-row"><span class="item-name">按门铃</span><span class="item-desc">Victor 开门。对话选项：① "只是来叙旧" → Victor: "fuck off" / ② "Ethan 让我带东西" → Victor 允许进入 / ③ "Let me in!" → 邻居报警，Game Over</span><span class="item-effect pos">5 min</span></div>
+          <div class="item-row"><span class="item-name">地毯下备用钥匙</span><span class="item-desc">最优潜行进入方式。出门时必须放回钥匙，否则游戏卡住无法进入下一章。</span><span class="item-effect req">最高效</span></div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Act 2 — 干扰与杀人</div>
+        <p class="prose">玩家通过制造干扰将 Victor 引导至特定房间，在 Victor 不在场时获取杀人道具，然后实施杀人。<br>规则：Victor 所在房间的道具不可互动；若干扰时间耗尽 Victor 发现 Mateo，任务失败。</p>
+
+        <div class="subsection">
+          <div class="subsection-title">干扰方式</div>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">打翻水杯</span><span class="item-desc">Victor 前往厕所/储物间取毛巾</span><span class="item-effect pos">+5 min</span></div>
+            <div class="item-row"><span class="item-name">拨打 Victor 手机</span><span class="item-desc">Victor 走向卧室接电话</span><span class="item-effect pos">+20 min</span></div>
+            <div class="item-row"><span class="item-name">冰箱/微波炉报警</span><span class="item-desc">Victor 前往厨房处理噪音</span><span class="item-effect pos">视情况</span></div>
+            <div class="item-row"><span class="item-name">电视/遥控器</span><span class="item-desc">音量调最大或切频道 → Victor 走向客厅</span><span class="item-effect pos">视情况</span></div>
+            <div class="item-row"><span class="item-name">安眠药（背包带来）</span><span class="item-desc">放入水杯递给 Victor → Victor 逐渐困倦在沙发睡着</span><span class="item-effect pos">~5 hrs（近乎无限）</span></div>
+            <div class="item-row"><span class="item-name">含支票的信封</span><span class="item-desc">Victor 坐在客厅仔细查看 → 从背后下手</span><span class="item-effect pos">短暂机会窗口</span></div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">杀人方式</div>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">厨房刀</span><span class="item-desc">前提：Victor 睡着或查看信封。收入背包后拖至 Victor 生效。需大量清理（擦拭、手套处理、拖地）。</span><span class="item-effect neg">高证据风险</span></div>
+            <div class="item-row"><span class="item-name">冰锥</span><span class="item-desc">在 Victor 不注意时制作（模具+装水+冰冻计时谜题）。冰融化后无武器痕迹，需清理指纹。</span><span class="item-effect pos">低证据风险</span></div>
+            <div class="item-row"><span class="item-name">煤气泄漏陷阱</span><span class="item-desc">进入厨房 → 找阀门 → 戴手套 → 缓慢释放煤气 → 在倒计时内离开。Victor 中毒身亡，呈现为意外事故。</span><span class="item-effect pos">最低证据风险</span></div>
+            <div class="item-row"><span class="item-name">电话线勒杀</span><span class="item-desc">找剪刀剪断电话线（Victor 不在同一房间）→ 拖动电话线至 Victor。未戴手套需事后擦拭。</span><span class="item-effect neg">中等风险</span></div>
+            <div class="item-row"><span class="item-name">绳子 / 衣架</span><span class="item-desc">衣柜或抽屉获取。机制同电话线。</span><span class="item-effect neg">中等风险</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Act 3 — 不在场证明</div>
+        <p class="prose">完成杀人后，玩家需通过卡牌系统与 Ethan 配合制造不在场证明。</p>
+        <div class="alert alert-info">
+          <div class="alert-icon">!</div>
+          <div class="alert-text">卡牌系统参考外部文档（见设计团队 Google Docs 链接）。Ethan 可协助建立不在场证明（具体互动机制 TBD）。</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CHAPTER 5-8 EDIT AREAS ===== -->
+    <div class="page" id="page-ch5-edit">
+      <div class="page-title">Chapter 5 <span style="color:var(--text3);font-size:14px;font-family:var(--sans);font-weight:400">— Draft Area</span></div>
+      <div class="page-meta"><span class="tag tag-chapter">CH 5</span><span class="tag" style="background:rgba(92,92,88,0.1);color:var(--text3);border:1px solid var(--border)">DRAFT</span></div>
+      <p class="prose" style="margin-bottom:24px;">此章节尚未编写。使用下方区域添加场景、对话和机制设计，保存后内容将保留在本设备。</p>
+      <div id="ch5-scenes"></div>
+      <div class="edit-area">
+        <div class="edit-toolbar">
+          <input class="edit-title-input" id="ch5-overview-title" placeholder="Chapter 5 — Overview & Time Structure" />
+          <button class="edit-btn primary" onclick="saveSection('ch5', 'overview')">Save</button>
+        </div>
+        <textarea class="edit-content" id="ch5-overview-content" placeholder="在此输入章节概述、时间结构和关卡情节..." rows="8"></textarea>
+      </div>
+      <button class="edit-btn" style="margin-bottom:12px;" onclick="addScene('ch5')">+ Add Scene</button>
+      <div id="ch5-extra-scenes"></div>
+    </div>
+
+    <div class="page" id="page-ch6-edit">
+      <div class="page-title">Chapter 6 <span style="color:var(--text3);font-size:14px;font-family:var(--sans);font-weight:400">— Draft Area</span></div>
+      <div class="page-meta"><span class="tag tag-chapter">CH 6</span><span class="tag" style="background:rgba(92,92,88,0.1);color:var(--text3);border:1px solid var(--border)">DRAFT</span></div>
+      <p class="prose" style="margin-bottom:24px;">此章节尚未编写。使用下方区域添加场景、对话和机制设计，保存后内容将保留在本设备。</p>
+      <div class="edit-area">
+        <div class="edit-toolbar">
+          <input class="edit-title-input" id="ch6-overview-title" placeholder="Chapter 6 — Overview & Time Structure" />
+          <button class="edit-btn primary" onclick="saveSection('ch6', 'overview')">Save</button>
+        </div>
+        <textarea class="edit-content" id="ch6-overview-content" placeholder="在此输入章节概述、时间结构和关卡情节..." rows="8"></textarea>
+      </div>
+      <button class="edit-btn" style="margin-bottom:12px;" onclick="addScene('ch6')">+ Add Scene</button>
+      <div id="ch6-extra-scenes"></div>
+    </div>
+
+    <div class="page" id="page-ch7-edit">
+      <div class="page-title">Chapter 7 <span style="color:var(--text3);font-size:14px;font-family:var(--sans);font-weight:400">— Draft Area</span></div>
+      <div class="page-meta"><span class="tag tag-chapter">CH 7</span><span class="tag" style="background:rgba(92,92,88,0.1);color:var(--text3);border:1px solid var(--border)">DRAFT</span></div>
+      <p class="prose" style="margin-bottom:24px;">此章节尚未编写。使用下方区域添加场景、对话和机制设计，保存后内容将保留在本设备。</p>
+      <div class="edit-area">
+        <div class="edit-toolbar">
+          <input class="edit-title-input" id="ch7-overview-title" placeholder="Chapter 7 — Overview & Time Structure" />
+          <button class="edit-btn primary" onclick="saveSection('ch7', 'overview')">Save</button>
+        </div>
+        <textarea class="edit-content" id="ch7-overview-content" placeholder="在此输入章节概述、时间结构和关卡情节..." rows="8"></textarea>
+      </div>
+      <button class="edit-btn" style="margin-bottom:12px;" onclick="addScene('ch7')">+ Add Scene</button>
+      <div id="ch7-extra-scenes"></div>
+    </div>
+
+    <div class="page" id="page-ch8-edit">
+      <div class="page-title">Chapter 8 <span style="color:var(--text3);font-size:14px;font-family:var(--sans);font-weight:400">— Draft Area</span></div>
+      <div class="page-meta"><span class="tag tag-chapter">CH 8</span><span class="tag" style="background:rgba(92,92,88,0.1);color:var(--text3);border:1px solid var(--border)">DRAFT</span></div>
+      <p class="prose" style="margin-bottom:24px;">此章节尚未编写。使用下方区域添加场景、对话和机制设计，保存后内容将保留在本设备。</p>
+      <div class="edit-area">
+        <div class="edit-toolbar">
+          <input class="edit-title-input" id="ch8-overview-title" placeholder="Chapter 8 — Overview & Time Structure" />
+          <button class="edit-btn primary" onclick="saveSection('ch8', 'overview')">Save</button>
+        </div>
+        <textarea class="edit-content" id="ch8-overview-content" placeholder="在此输入章节概述、时间结构和关卡情节..." rows="8"></textarea>
+      </div>
+      <button class="edit-btn" style="margin-bottom:12px;" onclick="addScene('ch8')">+ Add Scene</button>
+      <div id="ch8-extra-scenes"></div>
+    </div>
+
+  </div><!-- end content -->
+</div><!-- end main -->
+
+<script>
+  const pageMap = {
+    'overview': 'page-overview',
+    'characters': 'page-characters',
+    'mechanics': 'page-mechanics',
+    'ch1': 'page-ch1',
+    'ch2': 'page-ch2',
+    'ch3': 'page-ch3',
+    'ch4': 'page-ch4',
+    'ch5-edit': 'page-ch5-edit',
+    'ch6-edit': 'page-ch6-edit',
+    'ch7-edit': 'page-ch7-edit',
+    'ch8-edit': 'page-ch8-edit',
+  };
+
+  const breadcrumbMap = {
+    'overview': 'Overview',
+    'characters': 'Characters & Items',
+    'mechanics': 'Core Mechanics',
+    'ch1': 'Chapter 1',
+    'ch2': 'Chapter 2',
+    'ch3': 'Chapter 3',
+    'ch4': 'Chapter 4',
+    'ch5-edit': 'Chapter 5 — Draft',
+    'ch6-edit': 'Chapter 6 — Draft',
+    'ch7-edit': 'Chapter 7 — Draft',
+    'ch8-edit': 'Chapter 8 — Draft',
+  };
+
+  function navigate(key, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById(pageMap[key]);
+    if (target) target.classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.querySelectorAll('.nav-sub').forEach(n => n.classList.remove('active'));
+    if (el) {
+      el.classList.add('active');
+    }
+
+    document.getElementById('breadcrumb').innerHTML = `BLACKOUT / <span>${breadcrumbMap[key] || key}</span>`;
+    window.scrollTo(0, 0);
+  }
+
+  function toggleScene(header) {
+    const body = header.nextElementSibling;
+    const toggle = header.querySelector('.scene-toggle');
+    body.classList.toggle('open');
+    toggle.classList.toggle('open');
+  }
+
+  const sceneCounts = { ch5: 0, ch6: 0, ch7: 0, ch8: 0 };
+
+  function addScene(ch) {
+    sceneCounts[ch]++;
+    const idx = sceneCounts[ch];
+    const container = document.getElementById(`${ch}-extra-scenes`);
+    const div = document.createElement('div');
+    div.className = 'edit-area';
+    div.style.marginBottom = '16px';
+    div.innerHTML = `
+      <div class="edit-toolbar">
+        <span class="scene-editor-num">SCENE ${idx}</span>
+        <input class="edit-title-input" id="${ch}-s${idx}-title" placeholder="Scene ${idx} — Title / Location / Duration" />
+        <button class="edit-btn primary" onclick="saveSection('${ch}', 's${idx}')">Save</button>
+        <button class="edit-btn" onclick="this.closest('.edit-area').remove()" style="color:var(--danger);border-color:var(--danger)">Remove</button>
+      </div>
+      <textarea class="edit-content" id="${ch}-s${idx}-content" placeholder="Scene 概述、对话、道具、机制..." rows="10"></textarea>
+    `;
+    container.appendChild(div);
+    loadSection(ch, `s${idx}`);
+  }
+
+  function saveSection(ch, key) {
+    const titleEl = document.getElementById(`${ch}-${key}-title`);
+    const contentEl = document.getElementById(`${ch}-${key}-content`);
+    if (!contentEl) return;
+    const data = {
+      title: titleEl ? titleEl.value : '',
+      content: contentEl.value,
+      saved: new Date().toISOString()
+    };
+    localStorage.setItem(`blackout_${ch}_${key}`, JSON.stringify(data));
+    showSaved();
+  }
+
+  function loadSection(ch, key) {
+    const raw = localStorage.getItem(`blackout_${ch}_${key}`);
+    if (!raw) return;
+    try {
+      const data = JSON.parse(raw);
+      const titleEl = document.getElementById(`${ch}-${key}-title`);
+      const contentEl = document.getElementById(`${ch}-${key}-content`);
+      if (titleEl && data.title) titleEl.value = data.title;
+      if (contentEl && data.content) contentEl.value = data.content;
+    } catch(e) {}
+  }
+
+  function saveAll() {
+    ['ch5','ch6','ch7','ch8'].forEach(ch => {
+      saveSection(ch, 'overview');
+      for (let i = 1; i <= sceneCounts[ch]; i++) {
+        saveSection(ch, `s${i}`);
+      }
+    });
+    showSaved();
+  }
+
+  function showSaved() {
+    const btn = document.getElementById('saveBtn');
+    btn.textContent = 'Saved ✓';
+    btn.classList.add('saved');
+    setTimeout(() => {
+      btn.textContent = 'Save All';
+      btn.classList.remove('saved');
+    }, 2000);
+  }
+
+  // Load all saved data on start
+  ['ch5','ch6','ch7','ch8'].forEach(ch => {
+    loadSection(ch, 'overview');
+  });
+</script>
+</body>
+</html>
