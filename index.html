@@ -668,68 +668,108 @@
   .loc-chip.restricted { border-color: var(--danger); color: var(--danger); opacity: 0.7; }
   .loc-chip.key { border-color: var(--accent); color: var(--accent); }
 
-  /* EDIT AREA */
-  .edit-area {
-    background: var(--bg3);
-    border: 1px solid var(--border);
+  /* DOC BLOCKS — Google-Docs-style inline editing */
+  .doc-blocks { margin-bottom: 24px; }
+
+  .doc-block {
+    margin-bottom: 8px;
     border-radius: 6px;
-    overflow: hidden;
-    margin-bottom: 20px;
+    border: 1px solid transparent;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
   }
 
-  .edit-toolbar {
-    background: var(--bg4);
-    border-bottom: 1px solid var(--border);
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  body.editor-mode .doc-block:hover {
+    border-color: var(--border2);
+    background: var(--bg3);
   }
 
-  .edit-title-input {
-    background: transparent;
-    border: none;
+  body.editor-mode .doc-block:focus-within {
+    border-color: var(--accent);
+    background: var(--bg3);
+  }
+
+  .doc-block-title {
     font-family: var(--mono);
     font-size: 12px;
-    color: var(--text);
-    flex: 1;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 14px 16px 4px;
     outline: none;
+    min-height: 22px;
+    word-break: break-word;
   }
 
-  .edit-title-input::placeholder { color: var(--text3); }
+  .doc-block-title[contenteditable="true"] { cursor: text; }
 
-  .edit-btn {
-    background: var(--bg3);
-    border: 1px solid var(--border);
-    border-radius: 3px;
-    padding: 4px 8px;
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.15s;
-    white-space: nowrap;
+  .doc-block-title:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text3);
+    pointer-events: none;
+    font-weight: 400;
   }
 
-  .edit-btn:hover { border-color: var(--border2); color: var(--text); }
-  .edit-btn.primary { border-color: var(--accent); color: var(--accent); }
-  .edit-btn.primary:hover { background: rgba(200,169,110,0.12); }
-
-  .edit-content {
-    width: 100%;
-    background: transparent;
-    border: none;
-    padding: 16px;
-    font-family: var(--sans);
+  .doc-block-body {
+    padding: 4px 16px 14px;
     font-size: 13px;
     color: var(--text2);
     line-height: 1.8;
-    resize: vertical;
-    min-height: 200px;
     outline: none;
+    min-height: 60px;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
-  .edit-content::placeholder { color: var(--text3); }
+  .doc-block-body[contenteditable="true"] { cursor: text; }
+
+  .doc-block-body:empty::before {
+    content: attr(data-placeholder);
+    color: var(--text3);
+    pointer-events: none;
+  }
+
+  .doc-block-delete {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    border-radius: 3px;
+    padding: 2px 7px;
+    font-family: var(--mono);
+    font-size: 9px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  body.editor-mode .doc-block:hover .doc-block-delete,
+  body.editor-mode .doc-block:focus-within .doc-block-delete { opacity: 1; }
+
+  .add-block-btn {
+    background: transparent;
+    border: 1px dashed var(--border2);
+    color: var(--text3);
+    border-radius: 5px;
+    padding: 8px 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+    margin-bottom: 8px;
+  }
+
+  .add-block-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .scene-editor-num { /* kept for compatibility */ display: none; }
 
   .scene-editor-header {
     display: flex;
@@ -1905,69 +1945,60 @@
 
     <!-- ===== CHAPTER 5-8 EDIT AREAS ===== -->
     <div class="request-banner" id="requestBanner" style="display:none">
-      <span>👁 You are viewing in read-only mode.</span>
+      <span>You are viewing in read-only mode.</span>
       <button onclick="requestAccess()">Request edit access →</button>
     </div>
 
     <div class="page" id="page-ch5-edit">
       <div class="page-title">Chapter 5 <span style="color:var(--text3);font-size:14px;font-family:var(--sans);font-weight:400">— Draft Area</span></div>
       <div class="page-meta"><span class="tag tag-chapter">CH 5</span><span class="tag" style="background:rgba(92,92,88,0.1);color:var(--text3);border:1px solid var(--border)">DRAFT</span></div>
-      <p class="prose" style="margin-bottom:24px;">此章节尚未编写。使用下方区域添加场景、对话和机制设计，保存后内容将保留在本设备。</p>
-      <div id="ch5-scenes"></div>
-      <div class="edit-area">
-        <div class="edit-toolbar">
-          <input class="edit-title-input" id="ch5-overview-title" placeholder="Chapter 5 — Overview & Time Structure" />
-          <button class="edit-btn primary" onclick="saveSection('ch5', 'overview')">Save</button>
+      <div class="doc-blocks" id="ch5-blocks" data-ch="ch5">
+        <div class="doc-block">
+          <div class="doc-block-title" contenteditable="false" data-placeholder="Section Title"></div>
+          <div class="doc-block-body" contenteditable="false" data-placeholder="Click to start writing..."></div>
+          <button class="doc-block-delete" onclick="deleteBlock(this)">Remove</button>
         </div>
-        <textarea class="edit-content" id="ch5-overview-content" placeholder="在此输入章节概述、时间结构和关卡情节..." rows="8"></textarea>
       </div>
-      <button class="edit-btn" style="margin-bottom:12px;" onclick="addScene('ch5')">+ Add Scene</button>
-      <div id="ch5-extra-scenes"></div>
+      <button class="add-block-btn" id="ch5-add" onclick="addBlock('ch5')" style="display:none">+ Add Section</button>
     </div>
 
     <div class="page" id="page-ch6-edit">
       <div class="page-title">Chapter 6 <span style="color:var(--text3);font-size:14px;font-family:var(--sans);font-weight:400">— Draft Area</span></div>
       <div class="page-meta"><span class="tag tag-chapter">CH 6</span><span class="tag" style="background:rgba(92,92,88,0.1);color:var(--text3);border:1px solid var(--border)">DRAFT</span></div>
-      <p class="prose" style="margin-bottom:24px;">此章节尚未编写。使用下方区域添加场景、对话和机制设计，保存后内容将保留在本设备。</p>
-      <div class="edit-area">
-        <div class="edit-toolbar">
-          <input class="edit-title-input" id="ch6-overview-title" placeholder="Chapter 6 — Overview & Time Structure" />
-          <button class="edit-btn primary" onclick="saveSection('ch6', 'overview')">Save</button>
+      <div class="doc-blocks" id="ch6-blocks" data-ch="ch6">
+        <div class="doc-block">
+          <div class="doc-block-title" contenteditable="false" data-placeholder="Section Title"></div>
+          <div class="doc-block-body" contenteditable="false" data-placeholder="Click to start writing..."></div>
+          <button class="doc-block-delete" onclick="deleteBlock(this)">Remove</button>
         </div>
-        <textarea class="edit-content" id="ch6-overview-content" placeholder="在此输入章节概述、时间结构和关卡情节..." rows="8"></textarea>
       </div>
-      <button class="edit-btn" style="margin-bottom:12px;" onclick="addScene('ch6')">+ Add Scene</button>
-      <div id="ch6-extra-scenes"></div>
+      <button class="add-block-btn" id="ch6-add" onclick="addBlock('ch6')" style="display:none">+ Add Section</button>
     </div>
 
     <div class="page" id="page-ch7-edit">
       <div class="page-title">Chapter 7 <span style="color:var(--text3);font-size:14px;font-family:var(--sans);font-weight:400">— Draft Area</span></div>
       <div class="page-meta"><span class="tag tag-chapter">CH 7</span><span class="tag" style="background:rgba(92,92,88,0.1);color:var(--text3);border:1px solid var(--border)">DRAFT</span></div>
-      <p class="prose" style="margin-bottom:24px;">此章节尚未编写。使用下方区域添加场景、对话和机制设计，保存后内容将保留在本设备。</p>
-      <div class="edit-area">
-        <div class="edit-toolbar">
-          <input class="edit-title-input" id="ch7-overview-title" placeholder="Chapter 7 — Overview & Time Structure" />
-          <button class="edit-btn primary" onclick="saveSection('ch7', 'overview')">Save</button>
+      <div class="doc-blocks" id="ch7-blocks" data-ch="ch7">
+        <div class="doc-block">
+          <div class="doc-block-title" contenteditable="false" data-placeholder="Section Title"></div>
+          <div class="doc-block-body" contenteditable="false" data-placeholder="Click to start writing..."></div>
+          <button class="doc-block-delete" onclick="deleteBlock(this)">Remove</button>
         </div>
-        <textarea class="edit-content" id="ch7-overview-content" placeholder="在此输入章节概述、时间结构和关卡情节..." rows="8"></textarea>
       </div>
-      <button class="edit-btn" style="margin-bottom:12px;" onclick="addScene('ch7')">+ Add Scene</button>
-      <div id="ch7-extra-scenes"></div>
+      <button class="add-block-btn" id="ch7-add" onclick="addBlock('ch7')" style="display:none">+ Add Section</button>
     </div>
 
     <div class="page" id="page-ch8-edit">
       <div class="page-title">Chapter 8 <span style="color:var(--text3);font-size:14px;font-family:var(--sans);font-weight:400">— Draft Area</span></div>
       <div class="page-meta"><span class="tag tag-chapter">CH 8</span><span class="tag" style="background:rgba(92,92,88,0.1);color:var(--text3);border:1px solid var(--border)">DRAFT</span></div>
-      <p class="prose" style="margin-bottom:24px;">此章节尚未编写。使用下方区域添加场景、对话和机制设计，保存后内容将保留在本设备。</p>
-      <div class="edit-area">
-        <div class="edit-toolbar">
-          <input class="edit-title-input" id="ch8-overview-title" placeholder="Chapter 8 — Overview & Time Structure" />
-          <button class="edit-btn primary" onclick="saveSection('ch8', 'overview')">Save</button>
+      <div class="doc-blocks" id="ch8-blocks" data-ch="ch8">
+        <div class="doc-block">
+          <div class="doc-block-title" contenteditable="false" data-placeholder="Section Title"></div>
+          <div class="doc-block-body" contenteditable="false" data-placeholder="Click to start writing..."></div>
+          <button class="doc-block-delete" onclick="deleteBlock(this)">Remove</button>
         </div>
-        <textarea class="edit-content" id="ch8-overview-content" placeholder="在此输入章节概述、时间结构和关卡情节..." rows="8"></textarea>
       </div>
-      <button class="edit-btn" style="margin-bottom:12px;" onclick="addScene('ch8')">+ Add Scene</button>
-      <div id="ch8-extra-scenes"></div>
+      <button class="add-block-btn" id="ch8-add" onclick="addBlock('ch8')" style="display:none">+ Add Section</button>
     </div>
 
   </div><!-- end content -->
@@ -2042,35 +2073,44 @@
     toggle.classList.toggle('open');
   }
 
-  const sceneCounts = { ch5: 0, ch6: 0, ch7: 0, ch8: 0 };
-
-  function addScene(ch) {
-    sceneCounts[ch]++;
-    const idx = sceneCounts[ch];
-    const container = document.getElementById(`${ch}-extra-scenes`);
-    const div = document.createElement('div');
-    div.className = 'edit-area';
-    div.style.marginBottom = '16px';
-    div.innerHTML = `
-      <div class="edit-toolbar">
-        <span class="scene-editor-num">SCENE ${idx}</span>
-        <input class="edit-title-input" id="${ch}-s${idx}-title" placeholder="Scene ${idx} — Title / Location / Duration" />
-        <button class="edit-btn primary" onclick="saveSection('${ch}', 's${idx}')">Save</button>
-        <button class="edit-btn" onclick="this.closest('.edit-area').remove()" style="color:var(--danger);border-color:var(--danger)">Remove</button>
-      </div>
-      <textarea class="edit-content" id="${ch}-s${idx}-content" placeholder="Scene 概述、对话、道具、机制..." rows="10"></textarea>
-    `;
-    container.appendChild(div);
-    loadSection(ch, `s${idx}`);
-  }
-
   // ── GitHub config ──────────────────────────────────────────────────────────
   const REPO_OWNER = 'NianhanGuo';
   const REPO_NAME  = 'vestigeLeveldesign';
   const DATA_FILE  = 'data.json';
+  const CHAPTERS   = ['ch5','ch6','ch7','ch8'];
 
   let authToken    = null;
   let authUsername = null;
+
+  // ── Doc blocks ─────────────────────────────────────────────────────────────
+  function makeBlock(title, body, editable) {
+    const div = document.createElement('div');
+    div.className = 'doc-block';
+    div.innerHTML = `
+      <div class="doc-block-title" contenteditable="${editable}" data-placeholder="Section Title">${title || ''}</div>
+      <div class="doc-block-body"  contenteditable="${editable}" data-placeholder="Click to start writing...">${body || ''}</div>
+      <button class="doc-block-delete" onclick="deleteBlock(this)">Remove</button>
+    `;
+    return div;
+  }
+
+  function addBlock(ch) {
+    const container = document.getElementById(`${ch}-blocks`);
+    const block = makeBlock('', '', true);
+    container.appendChild(block);
+    block.querySelector('.doc-block-title').focus();
+  }
+
+  function deleteBlock(btn) {
+    const block = btn.closest('.doc-block');
+    const container = block.parentElement;
+    if (container.querySelectorAll('.doc-block').length > 1) {
+      block.remove();
+    } else {
+      block.querySelector('.doc-block-title').textContent = '';
+      block.querySelector('.doc-block-body').textContent  = '';
+    }
+  }
 
   // ── Auth ───────────────────────────────────────────────────────────────────
   function showLoginModal() {
@@ -2143,17 +2183,17 @@
     badge.style.display = enabled ? 'flex' : 'none';
     if (authUsername) document.getElementById('authUser').textContent = authUsername;
 
-    document.querySelectorAll('.edit-content, .edit-title-input').forEach(el => {
-      el.disabled = !enabled;
-      el.style.opacity = enabled ? '1' : '0.6';
-      el.style.cursor  = enabled ? '' : 'not-allowed';
+    document.body.classList.toggle('editor-mode', enabled);
+
+    document.querySelectorAll('.doc-block-title, .doc-block-body').forEach(el => {
+      el.contentEditable = enabled ? 'true' : 'false';
     });
-    document.querySelectorAll('.edit-btn.primary').forEach(btn => {
-      btn.style.display = enabled ? '' : 'none';
+
+    CHAPTERS.forEach(ch => {
+      const addBtn = document.getElementById(`${ch}-add`);
+      if (addBtn) addBtn.style.display = enabled ? '' : 'none';
     });
-    document.querySelectorAll('[onclick^="addScene"]').forEach(btn => {
-      btn.style.display = enabled ? '' : 'none';
-    });
+
     const banner = document.getElementById('requestBanner');
     if (banner) banner.style.display = enabled ? 'none' : 'flex';
   }
@@ -2161,44 +2201,51 @@
   function requestAccess() {
     const subject = encodeURIComponent('Request Editor Access — BLACKOUT Level Design');
     const body    = encodeURIComponent(
-      'Hi,\n\nI would like to request editor access to the BLACKOUT level design document at:\nhttps://nianhanguo.github.io/vestigeLeveldesign/\n\nMy GitHub username: \n\nThanks!'
+      'Hi,\n\nI would like to request editor access to the BLACKOUT level design document.\n\nMy GitHub username: \n\nThanks!'
     );
     window.open(`mailto:nguo@risd.edu?subject=${subject}&body=${body}`);
   }
 
-  // ── GitHub API data persistence ────────────────────────────────────────────
+  // ── GitHub API persistence ─────────────────────────────────────────────────
   async function loadFromGitHub() {
     try {
-      const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/master/${DATA_FILE}?t=${Date.now()}`;
+      const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/main/${DATA_FILE}?t=${Date.now()}`;
       const res = await fetch(url);
-      if (!res.ok) return false;
-      const data = await res.json();
-      Object.entries(data).forEach(([k, v]) => localStorage.setItem(k, JSON.stringify(v)));
-      return true;
+      if (!res.ok) return null;
+      return await res.json();
     } catch (e) {
-      return false;
+      return null;
     }
+  }
+
+  function applyData(data) {
+    if (!data) return;
+    CHAPTERS.forEach(ch => {
+      const sections = data[ch];
+      if (!Array.isArray(sections) || sections.length === 0) return;
+      const container = document.getElementById(`${ch}-blocks`);
+      container.innerHTML = '';
+      sections.forEach(s => {
+        container.appendChild(makeBlock(s.title || '', s.body || '', authToken ? 'true' : 'false'));
+      });
+    });
+  }
+
+  function collectData() {
+    const data = {};
+    CHAPTERS.forEach(ch => {
+      const blocks = document.querySelectorAll(`#${ch}-blocks .doc-block`);
+      data[ch] = Array.from(blocks).map(b => ({
+        title: b.querySelector('.doc-block-title').innerText.trim(),
+        body:  b.querySelector('.doc-block-body').innerText.trim()
+      }));
+    });
+    return data;
   }
 
   async function saveToGitHub() {
     if (!authToken) return false;
-    const data = {};
-    ['ch5','ch6','ch7','ch8'].forEach(ch => {
-      const keys = ['overview'];
-      for (let i = 1; i <= sceneCounts[ch]; i++) keys.push(`s${i}`);
-      keys.forEach(key => {
-        const titleEl   = document.getElementById(`${ch}-${key}-title`);
-        const contentEl = document.getElementById(`${ch}-${key}-content`);
-        if (contentEl) {
-          data[`blackout_${ch}_${key}`] = {
-            title:   titleEl ? titleEl.value : '',
-            content: contentEl.value,
-            saved:   new Date().toISOString()
-          };
-        }
-      });
-    });
-
+    const data    = collectData();
     const json    = JSON.stringify(data, null, 2);
     const encoded = btoa(unescape(encodeURIComponent(json)));
 
@@ -2211,11 +2258,8 @@
       if (existing.ok) sha = (await existing.json()).sha;
     } catch (e) {}
 
-    const body = {
-      message: `Update design document (${new Date().toLocaleString()})`,
-      content: encoded
-    };
-    if (sha) body.sha = sha;
+    const payload = { message: `Update design document (${new Date().toLocaleString()})`, content: encoded };
+    if (sha) payload.sha = sha;
 
     const res = await fetch(
       `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`,
@@ -2226,58 +2270,25 @@
           Accept: 'application/vnd.github.v3+json',
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(payload)
       }
     );
     return res.ok;
   }
 
-  // ── Section save/load ──────────────────────────────────────────────────────
-  function saveSection(ch, key) {
-    const titleEl   = document.getElementById(`${ch}-${key}-title`);
-    const contentEl = document.getElementById(`${ch}-${key}-content`);
-    if (!contentEl) return;
-    const data = {
-      title:   titleEl ? titleEl.value : '',
-      content: contentEl.value,
-      saved:   new Date().toISOString()
-    };
-    localStorage.setItem(`blackout_${ch}_${key}`, JSON.stringify(data));
-  }
-
-  function loadSection(ch, key) {
-    const raw = localStorage.getItem(`blackout_${ch}_${key}`);
-    if (!raw) return;
-    try {
-      const data      = JSON.parse(raw);
-      const titleEl   = document.getElementById(`${ch}-${key}-title`);
-      const contentEl = document.getElementById(`${ch}-${key}-content`);
-      if (titleEl   && data.title)   titleEl.value   = data.title;
-      if (contentEl && data.content) contentEl.value = data.content;
-    } catch (e) {}
-  }
-
+  // ── Save All ───────────────────────────────────────────────────────────────
   async function saveAll() {
-    ['ch5','ch6','ch7','ch8'].forEach(ch => {
-      saveSection(ch, 'overview');
-      for (let i = 1; i <= sceneCounts[ch]; i++) saveSection(ch, `s${i}`);
-    });
-
     const btn = document.getElementById('saveBtn');
-    if (authToken) {
-      btn.textContent = 'Saving…';
-      btn.disabled = true;
-      const ok = await saveToGitHub();
-      btn.disabled = false;
-      if (ok) {
-        showSaved();
-      } else {
-        btn.textContent = 'Save failed ✗';
-        btn.style.background = 'var(--danger)';
-        setTimeout(() => { btn.textContent = 'Save All'; btn.style.background = ''; }, 3000);
-      }
-    } else {
+    btn.textContent = 'Saving…';
+    btn.disabled = true;
+    const ok = await saveToGitHub();
+    btn.disabled = false;
+    if (ok) {
       showSaved();
+    } else {
+      btn.textContent = 'Save failed ✗';
+      btn.style.background = 'var(--danger)';
+      setTimeout(() => { btn.textContent = 'Save All'; btn.style.background = ''; }, 3000);
     }
   }
 
@@ -2285,22 +2296,19 @@
     const btn = document.getElementById('saveBtn');
     btn.textContent = 'Saved ✓';
     btn.classList.add('saved');
-    setTimeout(() => {
-      btn.textContent = 'Save All';
-      btn.classList.remove('saved');
-    }, 2000);
+    setTimeout(() => { btn.textContent = 'Save All'; btn.classList.remove('saved'); }, 2000);
   }
 
   // ── Startup ────────────────────────────────────────────────────────────────
   (async function init() {
-    await loadFromGitHub();
-    ['ch5','ch6','ch7','ch8'].forEach(ch => loadSection(ch, 'overview'));
+    setEditMode(false);
+    const data = await loadFromGitHub();
+    applyData(data);
 
     const stored = localStorage.getItem('blackout_auth_token');
     if (stored) {
       await validateAndApplyToken(stored, false);
-    } else {
-      setEditMode(false);
+      if (authToken) applyData(data);
     }
   })();
 </script>
