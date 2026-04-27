@@ -220,6 +220,10 @@
     color: var(--accent2);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    background: rgba(143,168,122,0.12);
+    border: 1px solid rgba(143,168,122,0.3);
+    border-radius: 4px;
+    padding: 4px 10px;
   }
   .auth-badge .dot {
     width: 6px; height: 6px;
@@ -679,14 +683,18 @@
     position: relative;
   }
 
+  body.editor-mode .doc-block {
+    border-color: var(--border);
+    background: var(--bg3);
+  }
+
   body.editor-mode .doc-block:hover {
     border-color: var(--border2);
-    background: var(--bg3);
   }
 
   body.editor-mode .doc-block:focus-within {
     border-color: var(--accent);
-    background: var(--bg3);
+    outline: none;
   }
 
   .doc-block-title {
@@ -2150,10 +2158,17 @@
           headers: { Authorization: `token ${token}` }
         })
       ]);
-      if (!repoRes.ok || !userRes.ok) throw new Error('bad response');
-      const repo = await repoRes.json();
-      if (!repo.permissions || !repo.permissions.push) throw new Error('no write access');
+      if (!userRes.ok) throw new Error('bad response');
       const user = await userRes.json();
+      if (!user.login) throw new Error('bad token');
+      // verify write access
+      const permRes = await fetch(
+        `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/collaborators/${user.login}/permission`,
+        { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
+      );
+      if (!permRes.ok) throw new Error('no access');
+      const perm = await permRes.json();
+      if (!['admin','write'].includes(perm.permission)) throw new Error('read-only');
       authToken    = token;
       authUsername = user.login;
       localStorage.setItem('blackout_auth_token', token);
