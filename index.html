@@ -1173,60 +1173,104 @@
 
     <!-- ===== MECHANICS ===== -->
     <div class="page" id="page-mechanics">
-      <div class="page-title">Core Mechanics Reference</div>
+      <div class="page-title">交互规则 &amp; Core Mechanics</div>
       <div class="page-meta">
         <span class="tag tag-chapter">System Design</span>
       </div>
 
+      <!-- Camera Rules -->
       <div class="section-block">
-        <div class="section-label">Interaction System</div>
-        <p class="prose">玩家通过点击或拖动与世界互动。物品可从 Inventory（物品栏）拖至 NPC 或场景热点以触发事件（例：拖动钱包给酒保，拖动钥匙至门上）。</p>
+        <div class="section-label">Cinematic Language &amp; Camera Rules</div>
+        <div class="item-list">
+          <div class="item-row"><span class="item-name">室内探索场景</span><span class="item-desc">俯视 / 半俯视镜头进行环境探索与道具寻找。完整呈现主角与 NPC。</span></div>
+          <div class="item-row"><span class="item-name">纯 NPC 对话场景</span><span class="item-desc">正反打镜头切换（Shot–reverse-shot）。</span></div>
+          <div class="item-row"><span class="item-name">与道具互动时</span><span class="item-desc">切换为第一人称视角，画面中不出现主角任何身体部位。点击可交互物品不会 zoom in。</span></div>
+          <div class="item-row"><span class="item-name">室外非探索场景</span><span class="item-desc">第三人称平视镜头，完整呈现主角与 NPC 全身形象。</span></div>
+        </div>
+        <div class="alert alert-info" style="margin-top:10px">
+          <div class="alert-icon">i</div>
+          <div class="alert-text">特殊情形：与 Ethan 聊天时采用电影式正反打，不露出主角脸。主角在车中忏悔时为正面镜头露脸，但警察问话无反打，做选项时无露脸。</div>
+        </div>
       </div>
 
+      <!-- UI Elements -->
+      <div class="section-block">
+        <div class="section-label">当前 UI 元素</div>
+        <div class="location-grid">
+          <div class="loc-chip">背包 Inventory</div>
+          <div class="loc-chip">Notes / To-do list</div>
+          <div class="loc-chip">存档 Save System</div>
+          <div class="loc-chip">手机 Phone</div>
+          <div class="loc-chip">时间 + 金钱（常驻）</div>
+          <div class="loc-chip">怀疑度（偶尔显示）</div>
+          <div class="loc-chip">弹窗提示</div>
+        </div>
+        <div class="alert alert-warn" style="margin-top:10px">
+          <div class="alert-icon">!</div>
+          <div class="alert-text">设计原则：不要每一章节都加入新机制，而是思考如何运用现有规则。怀疑度、记忆度和信任度三个指数只在警察问话时出现。</div>
+        </div>
+      </div>
+
+      <!-- Items -->
+      <div class="section-block">
+        <div class="section-label">道具系统</div>
+        <div class="item-list">
+          <div class="item-row"><span class="item-name">拾取</span><span class="item-desc">点击可互动道具自动收录进背包。</span></div>
+          <div class="item-row"><span class="item-name">查看</span><span class="item-desc">在背包内点击道具查看详细 info。</span></div>
+          <div class="item-row"><span class="item-name">购买</span><span class="item-desc">点击商店内道具进行购买。</span></div>
+          <div class="item-row"><span class="item-name">开关背包</span><span class="item-desc">点击背包图标打开，再次点击关闭。</span></div>
+          <div class="item-row"><span class="item-name">排序</span><span class="item-desc">背包内物品可通过拖拽调换顺序（drag-and-drop）。</span></div>
+        </div>
+      </div>
+
+      <!-- Special UI per scene -->
+      <div class="section-block">
+        <div class="section-label">场景特殊 UI</div>
+        <div class="item-list">
+          <div class="item-row"><span class="item-name">分尸场景</span><span class="item-desc">显示分尸完成度进度条（line prompt）。</span></div>
+          <div class="item-row"><span class="item-name">警察问话</span><span class="item-desc">显示怀疑度（Suspicion）line 提示。</span></div>
+          <div class="item-row"><span class="item-name">NPC 对话</span><span class="item-desc">卡牌系统偶尔出现（用于 Chapter 4 制造不在场证明）。</span></div>
+        </div>
+      </div>
+
+      <!-- Dialogue -->
+      <div class="section-block">
+        <div class="section-label">对话系统</div>
+        <p class="prose">对话选项仅需点击进行选择。选项结果影响后续对话、警察信任值或成就触发，不可回退。</p>
+        <div class="alert alert-info" style="margin-top:8px">
+          <div class="alert-icon">i</div>
+          <div class="alert-text">道具触发对话：随时将道具给予 NPC 即可开启与该道具相关的剧情，剧情结束后回到主线选择界面。</div>
+        </div>
+      </div>
+
+      <!-- Player guidance -->
+      <div class="section-block">
+        <div class="section-label">玩家引导系统</div>
+        <div class="mechanic-box">
+          <div class="mechanic-title">To-do List / 日记本（角色内世界引导）</div>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">内容</span><span class="item-desc">记录 Mateo 自己给自己的规划，以及对于现状的感想和内心想法。</span></div>
+            <div class="item-row"><span class="item-name">翻页功能</span><span class="item-desc">内容随关卡推进逐渐解锁。玩家若尝试翻到未解锁页面，弹出 UI 提示"暂时无法查看"。</span></div>
+            <div class="item-row"><span class="item-name">设计意图</span><span class="item-desc">主角偏好使用实体记事本而非手机备忘录。可用于传达回忆、情绪和叙事信息，不破坏沉浸感。不需要新增系统，仅扩展现有 Notes UI。</span></div>
+          </div>
+        </div>
+        <div class="mechanic-box" style="margin-top:10px">
+          <div class="mechanic-title">手机（Phone）</div>
+          <p class="prose" style="font-size:12px">用于发消息 / 通讯。</p>
+        </div>
+        <div class="mechanic-box" style="margin-top:10px">
+          <div class="mechanic-title">弹窗提示（设计者引导，世界观外）</div>
+          <p class="prose" style="font-size:12px">强力提示，位于游戏世界观之外。示例："Something feels off about the garage" / "车库有点不对劲"。</p>
+        </div>
+      </div>
+
+      <!-- Dialogue architecture -->
       <div class="section-block">
         <div class="section-label">Dialogue Choice Architecture</div>
         <p class="prose">对话选项通常有 2-4 个分支，部分分支有前提条件（如已购买酒水）。选项结果影响后续对话、警察信任值或成就触发，不可回退。</p>
         <div class="alert alert-warn">
           <div class="alert-icon">!</div>
           <div class="alert-text">NPC 对话顺序在 Chapter 1 中非强制，但玩家需与所有三位 NPC 均完成至少一次互动，才会触发 Mateo 晕倒事件。</div>
-        </div>
-      </div>
-
-      <div class="section-block">
-        <div class="section-label">Memory Fragment Mechanic (Chapter 2, Scene 4)</div>
-        <p class="prose">发现尸体后，Mateo 陷入眩晕并触发回忆片段。玩家需按正确时间顺序拼凑三个记忆碎片并 Submit。</p>
-        <div class="flow-steps">
-          <div class="flow-step">
-            <div class="flow-step-num">1</div>
-            <div class="flow-step-content">
-              <div class="flow-step-name">展示三个记忆碎片</div>
-              <div class="flow-step-note">玩家靠感觉排列先后顺序</div>
-            </div>
-          </div>
-          <div class="flow-connector"></div>
-          <div class="flow-step">
-            <div class="flow-step-num">2</div>
-            <div class="flow-step-content">
-              <div class="flow-step-name">提交排列 (Submit)</div>
-              <div class="flow-step-note">正确 → 进入藏尸环节并透露重要信息</div>
-            </div>
-          </div>
-          <div class="flow-connector"></div>
-          <div class="flow-step">
-            <div class="flow-step-num">3a</div>
-            <div class="flow-step-content">
-              <div class="flow-step-name">第一次失败</div>
-              <div class="flow-step-note">进入自首剧情（视为死亡）</div>
-            </div>
-          </div>
-          <div class="flow-connector"></div>
-          <div class="flow-step">
-            <div class="flow-step-num">3b</div>
-            <div class="flow-step-content">
-              <div class="flow-step-name">第二次失败</div>
-              <div class="flow-step-note">无剧情，直接死亡，进入下次尝试</div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
@@ -2278,10 +2322,32 @@
 
       <div class="section-block">
         <div class="section-label">Chapter Overview</div>
-        <p class="prose">Mateo 穿越回 Victor 死前，需要重新完成杀人并获取录像带证据。章节共分三幕：进入 Victor 家（Entry）、制造干扰并完成杀人（Kill）、制造不在场证明（Alibi）。</p>
+        <p class="prose">Mateo 穿越回 Victor 死前，需要重新完成杀人并获取录像带证据。章节共分三幕：进入 Victor 家（Entry）、制造干扰并完成杀人（Kill）、通过卡牌系统与 Ethan 制造不在场证明（Alibi）。</p>
         <div class="alert alert-info">
           <div class="alert-icon">!</div>
-          <div class="alert-text">时间系统在本章有根本变化：时间按固定频率自动流逝（倒计时），而非依赖物品互动触发。进入方式决定初始倒计时时长和后续证据清理难度。</div>
+          <div class="alert-text">时间系统在本章有根本变化：时间按固定频率自动流逝（倒计时），不再依赖物品互动触发，但使用相同 UI 显示时间流逝。进入方式决定初始倒计时时长和后续证据清理难度。</div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Time Structure</div>
+        <div class="timeline">
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">9:00 am</div><div class="timeline-desc">玩家到达 Victor 门前（自动跳转，非选项）。</div></div>
+          <div class="timeline-item"><div class="timeline-dot trigger"></div><div class="timeline-time">9:05 am</div><div class="timeline-desc">玩家进门后时间流逝至此处。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">9:10 am</div><div class="timeline-desc">与 Victor 发生完任何对话。</div></div>
+        </div>
+        <div class="mechanic-box" style="margin-top:12px">
+          <div class="mechanic-title">时间流逝规则</div>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">行动时间</span><span class="item-desc">进行干扰 → 干扰让玩家有时间探索获取杀人工具。</span></div>
+            <div class="item-row"><span class="item-name">干扰时间</span><span class="item-desc">达成的干扰项目，玩家可在不同空间内获取杀人道具。</span></div>
+            <div class="item-row"><span class="item-name">触发机制</span><span class="item-desc">根据进门方式有初始倒计时，给完成干扰动作的时间。干扰动作本身消耗 1 分钟，但根据干扰项目增加杀人时间。杀人时间倒计时被所交互物品影响，不同物品减少不同时间。</span></div>
+            <div class="item-row"><span class="item-name">失败条件</span><span class="item-desc">若杀人行动的时间超出干扰时间，干扰时间结束后 Victor 会发现你 → 任务失败。Victor 所在空间的道具不可互动。</span></div>
+          </div>
+        </div>
+        <div class="alert alert-warn" style="margin-top:8px">
+          <div class="alert-icon">!</div>
+          <div class="alert-text">UI 提示（探索 Victor 家时）："不可以打扰 Victor" / "这个东西或许有用 — 收进背包"。干扰被触发之前不可与杀人道具互动。</div>
         </div>
       </div>
 
@@ -2289,51 +2355,195 @@
         <div class="section-label">Act 1 — 进入方式（Entry Methods）</div>
         <div class="alert alert-warn">
           <div class="alert-icon">!</div>
-          <div class="alert-text">UI 提示："find a way to enter Victor's house, click around to find the key."</div>
+          <div class="alert-text">右上角弹窗：find a way to enter Victor's house, click around to find the key.</div>
         </div>
 
         <div class="item-list">
-          <div class="item-row"><span class="item-name">敲门一次</span><span class="item-desc">Victor 无回应</span><span class="item-effect neg">无行动时间</span></div>
-          <div class="item-row"><span class="item-name">敲门三次</span><span class="item-desc">Victor 愤怒开门 → 进入对话选项</span><span class="item-effect pos">3 min</span></div>
-          <div class="item-row"><span class="item-name">按门铃</span><span class="item-desc">Victor 开门。对话选项：① "只是来叙旧" → Victor: "fuck off" / ② "Ethan 让我带东西" → Victor 允许进入 / ③ "Let me in!" → 邻居报警，Game Over</span><span class="item-effect pos">5 min</span></div>
-          <div class="item-row"><span class="item-name">地毯下备用钥匙</span><span class="item-desc">最优潜行进入方式。出门时必须放回钥匙，否则游戏卡住无法进入下一章。</span><span class="item-effect req">最高效</span></div>
+          <div class="item-row"><span class="item-name">敲门一次</span><span class="item-desc">Victor 无回应。</span><span class="item-effect neg">无行动时间</span></div>
+          <div class="item-row"><span class="item-name">敲门三次</span><span class="item-desc">Victor 愤怒开门，进入对话选项。</span><span class="item-effect pos">3 min</span></div>
+          <div class="item-row"><span class="item-name">按门铃（5 min）</span><span class="item-desc">Victor 开门 → 对话选项（无时间消耗）：① "只是来叙旧" → Victor: "fuck off loser!" 玩家失败 / ② "Ethan asked me to bring something to you." → Victor: "ha, he finally thought it through" 同意进入 / ③ "Let me get in! (try to break in)" → 引起争执，邻居报警，Game Over</span><span class="item-effect pos">5 min</span></div>
+          <div class="item-row"><span class="item-name">地毯下备用钥匙</span><span class="item-desc">最优潜行进入方式。出门时必须将钥匙放回地毯下，否则游戏卡住无法进入下一章。</span><span class="item-effect req">最高效</span></div>
         </div>
       </div>
 
       <div class="section-block">
-        <div class="section-label">Act 2 — 干扰与杀人</div>
-        <p class="prose">玩家通过制造干扰将 Victor 引导至特定房间，在 Victor 不在场时获取杀人道具，然后实施杀人。<br>规则：Victor 所在房间的道具不可互动；若干扰时间耗尽 Victor 发现 Mateo，任务失败。</p>
+        <div class="section-label">Act 2 — 干扰方式</div>
+        <div class="alert alert-info" style="margin-bottom:12px">
+          <div class="alert-icon">i</div>
+          <div class="alert-text">进入房子后左上角提示："Kill Victor" / "click around try to distract Victor"。当 Victor 离开时弹窗："explore the room to find prop needed"。若玩家在规定时间内进入 Victor 所在房间，Victor 说 "leave me alone" → 玩家选项 A. Go in（完成杀人）B. Leave。</div>
+        </div>
 
         <div class="subsection">
-          <div class="subsection-title">干扰方式</div>
+          <div class="subsection-title">干扰方式 1 — 打翻水杯（引至厕所 / 储物间）</div>
+          <p class="prose" style="font-size:12px">Mateo 打翻水杯，水洒在地板上。Victor 骂骂咧咧前往厕所或储物间拿毛巾。</p>
           <div class="item-list">
-            <div class="item-row"><span class="item-name">打翻水杯</span><span class="item-desc">Victor 前往厕所/储物间取毛巾</span><span class="item-effect pos">+5 min</span></div>
-            <div class="item-row"><span class="item-name">拨打 Victor 手机</span><span class="item-desc">Victor 走向卧室接电话</span><span class="item-effect pos">+20 min</span></div>
-            <div class="item-row"><span class="item-name">冰箱/微波炉报警</span><span class="item-desc">Victor 前往厨房处理噪音</span><span class="item-effect pos">视情况</span></div>
-            <div class="item-row"><span class="item-name">电视/遥控器</span><span class="item-desc">音量调最大或切频道 → Victor 走向客厅</span><span class="item-effect pos">视情况</span></div>
-            <div class="item-row"><span class="item-name">安眠药（背包带来）</span><span class="item-desc">放入水杯递给 Victor → Victor 逐渐困倦在沙发睡着</span><span class="item-effect pos">~5 hrs（近乎无限）</span></div>
-            <div class="item-row"><span class="item-name">含支票的信封</span><span class="item-desc">Victor 坐在客厅仔细查看 → 从背后下手</span><span class="item-effect pos">短暂机会窗口</span></div>
+            <div class="item-row"><span class="item-name">Victor 台词（随机）</span><span class="item-desc">"You gotta be fucking kidding me." / "Watch where you're going." / "Jesus Christ… hold on." / "Great. Just fucking great."</span><span class="item-effect pos">+5 min</span></div>
           </div>
         </div>
 
         <div class="subsection">
-          <div class="subsection-title">杀人方式</div>
+          <div class="subsection-title">干扰方式 2 — 给 Victor 手机打电话（引至卧室）</div>
+          <p class="prose" style="font-size:12px">Mateo 拨打 Victor 手机，铃声响起，Victor 下意识走向卧室接电话。</p>
           <div class="item-list">
-            <div class="item-row"><span class="item-name">厨房刀</span><span class="item-desc">前提：Victor 睡着或查看信封。收入背包后拖至 Victor 生效。需大量清理（擦拭、手套处理、拖地）。</span><span class="item-effect neg">高证据风险</span></div>
-            <div class="item-row"><span class="item-name">冰锥</span><span class="item-desc">在 Victor 不注意时制作（模具+装水+冰冻计时谜题）。冰融化后无武器痕迹，需清理指纹。</span><span class="item-effect pos">低证据风险</span></div>
-            <div class="item-row"><span class="item-name">煤气泄漏陷阱</span><span class="item-desc">进入厨房 → 找阀门 → 戴手套 → 缓慢释放煤气 → 在倒计时内离开。Victor 中毒身亡，呈现为意外事故。</span><span class="item-effect pos">最低证据风险</span></div>
-            <div class="item-row"><span class="item-name">电话线勒杀</span><span class="item-desc">找剪刀剪断电话线（Victor 不在同一房间）→ 拖动电话线至 Victor。未戴手套需事后擦拭。</span><span class="item-effect neg">中等风险</span></div>
-            <div class="item-row"><span class="item-name">绳子 / 衣架</span><span class="item-desc">衣柜或抽屉获取。机制同电话线。</span><span class="item-effect neg">中等风险</span></div>
+            <div class="item-row"><span class="item-name">Victor 台词（随机）</span><span class="item-desc">"Who the fuck is calling…"</span><span class="item-effect pos">+20 min</span></div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">干扰方式 3 — 触发家电报警（引至厨房）</div>
+          <p class="prose" style="font-size:12px">冰箱门没关好（连续提示音）或微波炉错误提示。</p>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">Victor 台词（随机）</span><span class="item-desc">"What the fuck is that noise?" / "This shit again?" / "Hold on."</span><span class="item-effect pos">视情况</span></div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">干扰方式 4 — 电视 / 遥控器（引至客厅）</div>
+          <p class="prose" style="font-size:12px">电视突然没信号 / 切换频道 / 音量被调到最大。</p>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">Victor 台词（随机）</span><span class="item-desc">"What the fuck happened to the TV?" / "Don't touch my shit."</span><span class="item-effect pos">视情况</span></div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">干扰方式 5 — 安眠药（需背包带来）</div>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">效果</span><span class="item-desc">放入水杯中递给 Victor，Victor 喝下后抱怨 "why am i so tired these days…" 并在沙发上睡着。</span><span class="item-effect pos">~5 hrs（约等于无限）</span></div>
+          </div>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">干扰方式 6 — 递给 Victor 包有支票的信封</div>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">效果</span><span class="item-desc">Victor 兴致勃勃地坐在客厅仔细查看，Mateo 有机会从背后下手。</span><span class="item-effect pos">短暂机会窗口</span></div>
           </div>
         </div>
       </div>
 
       <div class="section-block">
-        <div class="section-label">Act 3 — 不在场证明</div>
-        <p class="prose">完成杀人后，玩家需通过卡牌系统与 Ethan 配合制造不在场证明。</p>
-        <div class="alert alert-info">
-          <div class="alert-icon">!</div>
-          <div class="alert-text">卡牌系统参考外部文档（见设计团队 Google Docs 链接）。Ethan 可协助建立不在场证明（具体互动机制 TBD）。</div>
+        <div class="section-label">Act 2 — 杀人方式</div>
+
+        <div class="mechanic-box">
+          <div class="mechanic-title">方法 1 — 刀（高风险 / 高证据）— 5 min</div>
+          <p class="prose" style="font-size:12px">道具：厨房刀 + 手套。前提：Victor 必须睡着或在查看信封。收入背包后拖到 Victor 身上即可生效。</p>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">清理需求</span><span class="item-desc">擦拭表面、丢弃手套、隐藏或带走刀、拖地清理血泊。任何一项未完成 → 警察怀疑度 +1。</span><span class="item-effect neg">高证据风险</span></div>
+          </div>
+        </div>
+
+        <div class="mechanic-box" style="margin-top:10px">
+          <div class="mechanic-title">方法 2 — 冰锥（低风险）</div>
+          <p class="prose" style="font-size:12px">前提：Victor 没在厨房内发现冰锥制作过程。</p>
+          <div class="flow-steps">
+            <div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-content"><div class="flow-step-name">找到模具</div></div></div>
+            <div class="flow-connector"></div>
+            <div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-content"><div class="flow-step-name">正确装水</div></div></div>
+            <div class="flow-connector"></div>
+            <div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-content"><div class="flow-step-name">冰冻计时谜题</div></div></div>
+            <div class="flow-connector"></div>
+            <div class="flow-step"><div class="flow-step-num">4</div><div class="flow-step-content"><div class="flow-step-name">制作冰锥 → 击杀</div><div class="flow-step-note">冰完全融化，不留下武器。需清理指纹。</div></div></div>
+          </div>
+        </div>
+
+        <div class="mechanic-box" style="margin-top:10px">
+          <div class="mechanic-title">方法 3 — 煤气泄漏陷阱（最低风险 — 呈现为意外事故）</div>
+          <p class="prose" style="font-size:12px">需在 Victor 不注意时进入厨房。规则：手套 + 在规定时间内离开。</p>
+          <div class="flow-steps">
+            <div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-content"><div class="flow-step-name">找到阀门</div></div></div>
+            <div class="flow-connector"></div>
+            <div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-content"><div class="flow-step-name">带上手套</div></div></div>
+            <div class="flow-connector"></div>
+            <div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-content"><div class="flow-step-name">调节煤气并缓慢释放</div></div></div>
+            <div class="flow-connector"></div>
+            <div class="flow-step"><div class="flow-step-num">4</div><div class="flow-step-content"><div class="flow-step-name">在倒计时结束前离开</div><div class="flow-step-note">Victor 后续中毒身亡</div></div></div>
+          </div>
+        </div>
+
+        <div class="mechanic-box" style="margin-top:10px">
+          <div class="mechanic-title">方法 4 — 电话线勒杀（中等风险）</div>
+          <p class="prose" style="font-size:12px">需在 Victor 不在同一房间时找到剪刀剪断电话线，再将电话线拖动至 Victor 进行交互。若未戴手套，需事后擦拭。</p>
+        </div>
+
+        <div class="mechanic-box" style="margin-top:10px">
+          <div class="mechanic-title">方法 5 — 绳子 / 衣架（中等风险）</div>
+          <p class="prose" style="font-size:12px">从衣架、抽屉或衣柜获取绳子/衣架，拖动至 Victor 进行交互。Victor 不能在同一房间时操作。若未戴手套，需事后擦拭。</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <div class="section-label">Act 3 — 不在场证明（卡牌系统）</div>
+        <p class="prose">完成杀人后，玩家需通过卡牌系统与多个 NPC 互动制造不在场证明，并可让 Ethan 协助。</p>
+
+        <div class="mechanic-box">
+          <div class="mechanic-title">卡牌核心规则</div>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">NPC 属性</span><span class="item-desc">每个 NPC 有两个值：Memory（M，NPC 对玩家的记忆强度）和 Severity（S，玩家积累的危险/暴露度）。</span></div>
+            <div class="item-row"><span class="item-name">出牌</span><span class="item-desc">每张卡有时间消耗（T）、严重度（S）、记忆增益/减少（M）和成功率。出牌修改 NPC 的 M 值并可能提升 S 值。</span></div>
+            <div class="item-row"><span class="item-name">风险阈值</span><span class="item-desc">若 S 超过 NPC 的危险阈值（Danger Threshold），行动失败 → 警报 / NPC 敌对 / 任务失败。</span></div>
+            <div class="item-row"><span class="item-name">时间限制</span><span class="item-desc">每张卡消耗 Time（T）。玩家有固定总 Time Pool。时间耗尽 → 任务立即结束。</span></div>
+            <div class="item-row"><span class="item-name">核心机制</span><span class="item-desc">消耗 Time + Severity → 增加 Memory。推荐数值：T(25) S(15) M(25)。平均一局约 6–9 张牌。</span></div>
+          </div>
+        </div>
+
+        <div class="mechanic-box" style="margin-top:12px">
+          <div class="mechanic-title">胜负条件</div>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">胜利</span><span class="item-desc">在时间耗尽前：① 达到每个目标 NPC 的 Memory 配额；② 所有 NPC 的 S 值保持在危险阈值以下。</span></div>
+            <div class="item-row"><span class="item-name">失败</span><span class="item-desc">时间耗尽前 Memory 未达标 / 任意 NPC 的 S 达到或超过阈值 / 未能完成必要目标。</span></div>
+          </div>
+        </div>
+
+        <div class="mechanic-box" style="margin-top:12px">
+          <div class="mechanic-title">1. 小矛盾卡（基础卡）— 中性颜色，抽象符号</div>
+          <p class="prose" style="font-size:12px">低 S 低 M，适合前期刷新。</p>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">T1 低声嘀咕</span><span class="item-desc">S+1 M+1</span></div>
+            <div class="item-row"><span class="item-name">T2 提高音量</span><span class="item-desc">S+2 M+1→3</span></div>
+            <div class="item-row"><span class="item-name">T3 讽刺挖苦</span><span class="item-desc">S+3 M+2→4</span></div>
+            <div class="item-row"><span class="item-name">T4 指着</span><span class="item-desc">S+4 M+2→5</span></div>
+          </div>
+        </div>
+
+        <div class="mechanic-box" style="margin-top:10px">
+          <div class="mechanic-title">2. 大矛盾卡 — 暖亮色，简化人物形象</div>
+          <p class="prose" style="font-size:12px">打出 2 张小矛盾后开始刷新进入 4 张卡牌池。有刷新频率限制，但需要大矛盾才能达成任务目标。</p>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">T5 当众斥责</span><span class="item-desc">S+6 M+3→5</span></div>
+            <div class="item-row"><span class="item-name">T4 摔东西</span><span class="item-desc">S+7 M+4→7</span></div>
+            <div class="item-row"><span class="item-name">T4 挑动顾客</span><span class="item-desc">S+6 M+3→6</span></div>
+            <div class="item-row"><span class="item-name">T5 公开辱骂</span><span class="item-desc">S+8 M+4→6</span></div>
+          </div>
+        </div>
+
+        <div class="mechanic-box" style="margin-top:10px">
+          <div class="mechanic-title">3. 保命卡（Survival / 防御卡）— 冷亮色</div>
+          <p class="prose" style="font-size:12px">S 值高时可使用。消耗 T，只降低 S，M 通常无变化（一个例外）。可与矛盾卡叠加 buff。</p>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">T2 道歉</span><span class="item-desc">S-2 M+0（可与某些矛盾卡叠加）</span></div>
+            <div class="item-row"><span class="item-name">T2 解释</span><span class="item-desc">S-1 M+0</span></div>
+            <div class="item-row"><span class="item-name">T4 赔礼（Give a Gift）</span><span class="item-desc">S-3 M+1（可叠加）</span></div>
+            <div class="item-row"><span class="item-name">闪身离开（Escape）</span><span class="item-desc">重开任务，S 重置，但消耗大量 T。</span></div>
+          </div>
+        </div>
+
+        <div class="mechanic-box" style="margin-top:10px">
+          <div class="mechanic-title">4. 无矛盾卡（Rare）— 灰色</div>
+          <p class="prose" style="font-size:12px">极低概率刷新，消耗大量 T，但 M 很高。通过意外事件制造记忆。</p>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">T6 假晕</span><span class="item-desc">S+8 M+5→7</span></div>
+            <div class="item-row"><span class="item-name">T3 小意外</span><span class="item-desc">S+3 M+2→3</span></div>
+            <div class="item-row"><span class="item-name">T4 大声电话</span><span class="item-desc">S+1 M+3→4</span></div>
+            <div class="item-row"><span class="item-name">T5 私下谈话</span><span class="item-desc">S-2 M+5→7</span></div>
+          </div>
+        </div>
+
+        <div class="mechanic-box" style="margin-top:12px">
+          <div class="mechanic-title">NPC 数值</div>
+          <div class="item-list">
+            <div class="item-row"><span class="item-name">NPC 1 — 暴躁型</span><span class="item-desc">M Quota: 20 / S Threshold: 10。容易被激怒，连续大矛盾必败，需穿插保命卡。反应：小矛盾 "excuse you!" / 大矛盾 "If you don't shut up, I will beat you up." / 保命 "Huh, I don't like excuses." / 成功 "Hmph, I'll remember you! No matter where you hide, I won't forget!" / 被警察询问：S 达上限时给出记忆证词</span></div>
+            <div class="item-row"><span class="item-name">NPC 2 — 老人型</span><span class="item-desc">M Quota: 30 / S Threshold: 15。难获取 M，但 S 忍耐度高，反应慢不容易被激怒。反应：小矛盾 "你说什么，你可以礼貌一点吗？" / 大矛盾 "请你对我放尊重点." / 保命 "乖孩子，这才是你对待老人该有的态度." / 被警察询问：我好像记得这个小伙子，他很没礼貌，发生什么事了警官？</span></div>
+            <div class="item-row"><span class="item-name">NPC 3 — 暴躁店员</span><span class="item-desc">M Quota: 15 / S Threshold: 8。极高暴躁度但记忆力好；使用保命卡时 S 降低减少 20%。反应：小矛盾 "你在这样和我说话你就完蛋了？" / 大矛盾 "我受够了信不信我现在就能把你撕成两半." / 保命 "你就算这样我也不一定原谅你。" / 被警察询问：我记得他，我真的差点忍不住把他揍了。</span></div>
+          </div>
         </div>
       </div>
     </div>
