@@ -1305,25 +1305,23 @@
                 <div class="dialogue-speaker">Bartender</div>
                 <div class="dialogue-text">"Hello sir, what can I get for you?"</div>
               </div>
-
               <div class="dialogue-block choice">
                 <div class="dialogue-speaker">Player Choice</div>
                 <div class="choice-options">
-                  <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"Can I get…" → 点击酒水单任意酒款 → 付款（拖动钱包）</span></div>
+                  <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"Can I get…" → 点击酒水单任意酒款 → Bartender: "Alright, how would you like to pay?" → 玩家拖动钱包付款</span></div>
                   <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"Nothing." → 退出对话，无事发生</span></div>
-                  <div class="choice-opt"><span class="choice-label">C</span><span class="choice-text">"Hey, any news lately?" → 购酒前触发拒绝，购酒后触发 Victor 失踪对话</span></div>
+                  <div class="choice-opt"><span class="choice-label">C</span><span class="choice-text">"Hey, any news lately?" → 未购酒: "Sir, I have no clue what you are talking about." 已购酒: 进入 Victor 对话</span></div>
                 </div>
               </div>
 
               <div class="dialogue-block npc">
-                <div class="dialogue-speaker">Bartender（购酒后）</div>
+                <div class="dialogue-speaker">Bartender（购酒后 — "any news lately?"）</div>
                 <div class="dialogue-text">"You heard about Victor? He went missing four days ago."</div>
               </div>
-
               <div class="dialogue-block choice">
-                <div class="dialogue-speaker">Mateo Response</div>
+                <div class="dialogue-speaker">Mateo</div>
                 <div class="choice-options">
-                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"That name doesn't ring a bell." → Bartender: "Huh. Thought it would've made it to your ears by now…"</span></div>
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"That name doesn't ring a bell." → Bartender: "Huh. Thought it would've made it to your ears by now. Everyone's been talking about this."</span></div>
                   <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"Victor… remind me. What's the story?"</span></div>
                 </div>
               </div>
@@ -1332,10 +1330,55 @@
                 <div class="dialogue-speaker">Bartender</div>
                 <div class="dialogue-text">"Who would've thought? Loud, nasty guy like that—ran his mouth too much, and now he's the one no one can find. Pathetic, really."</div>
               </div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"What was he like, exactly?"</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"You know him well?"</span></div>
+                </div>
+              </div>
 
-              <div class="dialogue-block note">
-                <div class="dialogue-speaker">Designer Note</div>
-                <div class="dialogue-text">酒保后续内容描述 Victor 的暴力行为、与常客起冲突、警察介入。对话以 "something about the way he vanished doesn't sit right" 收尾，营造悬疑基调。完整对话见原始文件第一章。</div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Bartender</div>
+                <div class="dialogue-text">"He had a real temper — used to show up here sometimes, acting like he owned the place. We had to chase him down just to get him to pay his tab."</div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Bartender</div>
+                <div class="dialogue-text">"One night, he got into it with another regular. Nearly beat the guy half to death."</div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Bartender</div>
+                <div class="dialogue-text">"Cops showed up fast. Pretty sure someone ended up in the hospital."</div>
+              </div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Damn. Sounds like the kind of guy people remember for all the wrong reasons."</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"For real? That's some wild shit."</span></div>
+                </div>
+              </div>
+
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Bartender</div>
+                <div class="dialogue-text">"We almost banned him, but he stopped showing up after the cops came."</div>
+              </div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Doesn't sound like the kind of guy who disappears quietly."</span></div>
+                </div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Bartender</div>
+                <div class="dialogue-text">"Not at all. But no one knows why he disappeared. No clues, no warning, nothing that adds up."</div>
+              </div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="dialogue-text">"Guess the bar's been a little calmer without him, huh?"</div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Bartender</div>
+                <div class="dialogue-text">"Still... something about the way he vanished doesn't sit right."</div>
               </div>
             </div>
 
@@ -1343,13 +1386,21 @@
               <div class="subsection-title">NPC 1 — Bar Regular（Victor 失踪话题）</div>
               <div class="dialogue-block npc">
                 <div class="dialogue-speaker">NPC 1</div>
-                <div class="dialogue-text">"Have you heard about the news? Victor went missing just a few days ago."</div>
+                <div class="dialogue-text">"Have you heard about the news?"</div>
+              </div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="dialogue-text">"Huh?"</div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">NPC 1</div>
+                <div class="dialogue-text">"Victor went missing just a few days ago. That gangster probably pissed off the wrong person… or just got wasted and passed out in some alley again."</div>
               </div>
               <div class="dialogue-block choice">
-                <div class="dialogue-speaker">Mateo Response</div>
+                <div class="dialogue-speaker">Mateo</div>
                 <div class="choice-options">
-                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Is that so?" → NPC: "Yeah, well… can't say I'm surprised."</span></div>
-                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"I don't give a fuck about that asshole." → NPC: "What'd he do to you?"</span></div>
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Is that so?" → NPC1: "Yeah, well… can't say I'm surprised. Too many people couldn't stand him." → Mateo: "I would imagine…" / "Funny to hear that."</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"I don't give a fuck about that asshole." → NPC1: "What'd he do to you?" → Mateo: "Let's not mention it." / "Long story but don't really want to talk about it." → NPC1: "Up to you. But for what it's worth... I never liked him either." → Mateo: 沉思</span></div>
                 </div>
               </div>
             </div>
@@ -1360,7 +1411,21 @@
                 <div class="dialogue-speaker">NPC 2</div>
                 <div class="dialogue-text">"Hey man, do you happen to have a lighter?"</div>
               </div>
-              <p class="prose">Mateo 递出打火机，引发关于"这周好漫长"的闲聊。两条分支分别通向关于"城市压力"的隐晦铺垫（为后续城市氛围做渲染）。</p>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="dialogue-text">"Yeah. Here."</div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">NPC 2</div>
+                <div class="dialogue-text">"Appreciate it. It's such a long week."</div>
+              </div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"What day is it again?" → NPC2: "Wednesday, but it feels like a Friday. Streets are busier than usual." → Mateo: "People looking for an excuse to feel normal, I guess." / "Might be something in the air tonight."</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"Same here. Really need a break." → NPC2: "Yeah. Just waiting for a vacation that keeps getting pushed. These days, the bar's the only place that feels like mine." → Mateo: "You ever get the feeling things aren't slowing down anytime soon?" / "Yeah. Lately, it feels like the city's holding its breath." → NPC2: "Like something's about to snap. People walk faster, talk less." → Mateo: "You felt it too?" / "That's our world. No complaints."</span></div>
+                </div>
+              </div>
             </div>
 
             <div class="subsection">
@@ -1373,7 +1438,13 @@
                 <div class="dialogue-speaker">NPC 3</div>
                 <div class="dialogue-text">"You look fine, but sorry — not my type. Not in the mood for meeting another guy tonight."</div>
               </div>
-              <p class="prose">后续对话分支涉及轻度反驳，均以轻描淡写结束。此互动主要功能：增加场景人气感，不影响主线。</p>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"That was not what I asked…" → NPC3: "Mmh, maybe not — but you were looking at me like you had something else in mind. Can't blame you though. I get that a lot." → Mateo: "And it's not my fault some people are a little too into themselves." / "If that's what you want to believe, go ahead. I'm leaving…"</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"Not everything's about you." → NPC3: "Relax. You're not the first guy to ask me something just to sit closer. But points for confidence, I guess." → Mateo: "Didn't realize asking about a chair was a romantic gesture." / "You can keep the seat. I'll stand — wouldn't want to give you the wrong idea."</span></div>
+                </div>
+              </div>
             </div>
 
             <div class="dialogue-block note">
@@ -1402,10 +1473,10 @@
               <div class="dialogue-text">"Hey, man — it's late. We're closing up."</div>
             </div>
             <div class="dialogue-block choice">
-              <div class="dialogue-speaker">Mateo Response</div>
+              <div class="dialogue-speaker">Mateo</div>
               <div class="choice-options">
-                <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Oh, damn. Sorry about that — totally lost track of time."</span></div>
-                <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"I totally passed out. What time is it?" → Bartender: "Pushing 2AM."</span></div>
+                <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Oh, damn. Sorry about that — totally lost track of time." → Bartender: "No worries. You should head home if you wanna catch any sleep before sunrise." → Mateo: "Ha, thanks for the reminder." / "Story of my life."</span></div>
+                <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"I totally passed out. What time is it?" → Bartender: "Pushing 2AM. You were out cold back there." → Mateo: "Yeah... rough day." / "Damn. That's later than I thought."</span></div>
               </div>
             </div>
           </div>
@@ -1438,10 +1509,29 @@
             </div>
 
             <div class="subsection">
+              <div class="subsection-title">Pocket Items</div>
+              <div class="item-list">
+                <div class="item-row"><span class="item-name">钱包</span><span class="item-desc">内含 $50 减去买酒的钱</span></div>
+                <div class="item-row"><span class="item-name">水晶纸糖果</span><span class="item-desc">1颗</span></div>
+                <div class="item-row"><span class="item-name">照片</span><span class="item-desc">两个小男孩搂着对方的肩膀大笑——黄色头发的显得有些拘谨，黑色头发的男孩看起来很瘦弱但是很开心</span></div>
+                <div class="item-row"><span class="item-name">钥匙（两片）</span><span class="item-desc">家门钥匙 + 车钥匙</span><span class="item-effect req">Required</span></div>
+                <div class="item-row"><span class="item-name">手机</span><span class="item-desc">暂时无法解锁</span></div>
+              </div>
+            </div>
+
+            <div class="subsection">
               <div class="subsection-title">404 邻居对话（重要提示）</div>
               <div class="dialogue-block npc">
                 <div class="dialogue-speaker">Neighbor (404)</div>
                 <div class="dialogue-text">"Oh—Mateo? Everything alright?"</div>
+              </div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="dialogue-text">"Uh... yeah. Just a bit disoriented."</div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Neighbor (404)</div>
+                <div class="dialogue-text">"You sure? You looked like you didn't know where you were going."</div>
               </div>
               <div class="dialogue-block">
                 <div class="dialogue-speaker">Mateo</div>
@@ -1450,6 +1540,10 @@
               <div class="dialogue-block npc">
                 <div class="dialogue-speaker">Neighbor (404)</div>
                 <div class="dialogue-text">"That's odd. You live right next door."</div>
+              </div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="dialogue-text">"Right. Sorry—long day."</div>
               </div>
             </div>
 
