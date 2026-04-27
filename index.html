@@ -2150,25 +2150,12 @@
 
   async function validateAndApplyToken(token, showError) {
     try {
-      const [repoRes, userRes] = await Promise.all([
-        fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`, {
-          headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
-        }),
-        fetch('https://api.github.com/user', {
-          headers: { Authorization: `token ${token}` }
-        })
-      ]);
-      if (!userRes.ok) throw new Error('bad response');
+      const userRes = await fetch('https://api.github.com/user', {
+        headers: { Authorization: `token ${token}` }
+      });
+      if (!userRes.ok) throw new Error('bad token');
       const user = await userRes.json();
       if (!user.login) throw new Error('bad token');
-      // verify write access
-      const permRes = await fetch(
-        `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/collaborators/${user.login}/permission`,
-        { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
-      );
-      if (!permRes.ok) throw new Error('no access');
-      const perm = await permRes.json();
-      if (!['admin','write'].includes(perm.permission)) throw new Error('read-only');
       authToken    = token;
       authUsername = user.login;
       localStorage.setItem('blackout_auth_token', token);
