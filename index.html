@@ -678,14 +678,10 @@
   .doc-block {
     margin-bottom: 8px;
     border-radius: 6px;
-    border: 1px solid transparent;
-    transition: border-color 0.15s, background 0.15s;
-    position: relative;
-  }
-
-  body.editor-mode .doc-block {
-    border-color: var(--border);
+    border: 1px solid var(--border);
     background: var(--bg3);
+    transition: border-color 0.15s;
+    position: relative;
   }
 
   body.editor-mode .doc-block:hover {
@@ -694,7 +690,6 @@
 
   body.editor-mode .doc-block:focus-within {
     border-color: var(--accent);
-    outline: none;
   }
 
   .doc-block-title {
