@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BLACKOUT — Level Design Document</title>
+<title>VESTIGE — Level Design Document</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap');
 
@@ -897,7 +897,7 @@
 <!-- SIDEBAR -->
 <nav class="sidebar">
   <div class="sidebar-header">
-    <div class="game-title">BLACKOUT</div>
+    <div class="game-title">VESTIGE</div>
     <div class="game-subtitle">Level Design Document v0.1</div>
   </div>
 
@@ -987,7 +987,7 @@
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div class="breadcrumb" id="breadcrumb">BLACKOUT / <span>Overview</span></div>
+    <div class="breadcrumb" id="breadcrumb">VESTIGE / <span>Overview</span></div>
     <div class="topbar-right">
       <div id="authBadge" class="auth-badge" style="display:none">
         <div class="dot"></div>
@@ -1011,7 +1011,7 @@
 
       <div class="section-block">
         <div class="section-label">Game Summary</div>
-        <p class="prose">BLACKOUT is a narrative mystery game in which the player controls Mateo Collins — a man who wakes up with amnesia only to discover a body in his car. The game unfolds across multiple chapters, each representing a single day or night. Players navigate dialogue trees, manage a Police Trust meter, and make choices that permanently alter narrative branches.</p>
+        <p class="prose">VESTIGE is a narrative mystery game in which the player controls Mateo Collins — a man who wakes up with amnesia only to discover a body in his car. The game unfolds across multiple chapters, each representing a single day or night. Players navigate dialogue trees, manage a Police Trust meter, and make choices that permanently alter narrative branches.</p>
       </div>
 
       <div class="section-block">
@@ -2065,7 +2065,7 @@
       el.classList.add('active');
     }
 
-    document.getElementById('breadcrumb').innerHTML = `BLACKOUT / <span>${breadcrumbMap[key] || key}</span>`;
+    document.getElementById('breadcrumb').innerHTML = `VESTIGE / <span>${breadcrumbMap[key] || key}</span>`;
     window.scrollTo(0, 0);
   }
 
@@ -2153,12 +2153,12 @@
       if (!user.login) throw new Error('bad token');
       authToken    = token;
       authUsername = user.login;
-      localStorage.setItem('blackout_auth_token', token);
+      localStorage.setItem('vestige_auth_token', token);
       setEditMode(true);
       return true;
     } catch (e) {
       authToken = null;
-      localStorage.removeItem('blackout_auth_token');
+      localStorage.removeItem('vestige_auth_token');
       setEditMode(false);
       if (showError) document.getElementById('tokenError').textContent = 'Invalid token or no write access to this repo.';
       return false;
@@ -2168,7 +2168,7 @@
   function logout() {
     authToken    = null;
     authUsername = null;
-    localStorage.removeItem('blackout_auth_token');
+    localStorage.removeItem('vestige_auth_token');
     setEditMode(false);
   }
 
@@ -2196,9 +2196,9 @@
   }
 
   function requestAccess() {
-    const subject = encodeURIComponent('Request Editor Access — BLACKOUT Level Design');
+    const subject = encodeURIComponent('Request Editor Access — VESTIGE Level Design');
     const body    = encodeURIComponent(
-      'Hi,\n\nI would like to request editor access to the BLACKOUT level design document.\n\nMy GitHub username: \n\nThanks!'
+      'Hi,\n\nI would like to request editor access to the VESTIGE level design document.\n\nMy GitHub username: \n\nThanks!'
     );
     window.open(`mailto:nguo@risd.edu?subject=${subject}&body=${body}`);
   }
@@ -2302,7 +2302,7 @@
     const data = await loadFromGitHub();
     applyData(data);
 
-    const stored = localStorage.getItem('blackout_auth_token');
+    const stored = localStorage.getItem('vestige_auth_token');
     if (stored) {
       await validateAndApplyToken(stored, false);
       if (authToken) applyData(data);
