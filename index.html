@@ -1924,15 +1924,16 @@
         <div class="timeline">
           <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">11:00</div><div class="timeline-desc">玩家起床，自由探索。找到日历时手机消息触发（Ethan 约晚餐）。</div></div>
           <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">随时出门</div><div class="timeline-desc">玩家可随时点击"出门"，时间自动跳至 17:00。</div></div>
-          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">17:00</div><div class="timeline-desc">约会提示弹出，需驾车前往餐厅。</div></div>
-          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">17:30</div><div class="timeline-desc">到达餐厅。</div></div>
-          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">19:30</div><div class="timeline-desc">晚餐结束。</div></div>
+          <div class="timeline-item"><div class="timeline-dot trigger"></div><div class="timeline-time">17:00</div><div class="timeline-desc">和 Ethan 的约会提示弹出，玩家需要开车去 Velour Room 餐厅。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">17:30</div><div class="timeline-desc">到达餐厅。Scene 2 晚餐对话开始。</div></div>
+          <div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-time">19:30</div><div class="timeline-desc">晚餐结束。进入第四章。</div></div>
         </div>
       </div>
 
       <div class="section-block">
         <div class="section-label">Scenes</div>
 
+        <!-- Scene 1 -->
         <div class="scene-card">
           <div class="scene-header" onclick="toggleScene(this)">
             <span class="scene-num">S1</span>
@@ -1941,88 +1942,326 @@
             <span class="scene-toggle">▶</span>
           </div>
           <div class="scene-body">
-            <div class="dialogue-block npc">
-              <div class="dialogue-speaker">Ethan（短信）</div>
-              <div class="dialogue-text">"Are you heading there yet? I am on my way"</div>
+            <div class="alert alert-info" style="margin-bottom:12px">
+              <div class="alert-icon">i</div>
+              <div class="alert-text">玩家找到日历时触发：手机弹出 Ethan 约晚餐对话。左上角任务提示："have dinner with Ethan without have him notice you've lost all memory."</div>
             </div>
-            <div class="dialogue-block choice">
-              <div class="dialogue-speaker">Mateo 回复选项</div>
-              <div class="choice-options">
-                <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"not yet"</span></div>
-                <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"can you sent me the address again?"</span></div>
-                <div class="choice-opt"><span class="choice-label">C !</span><span class="choice-text">"who are you" → 章节失败</span></div>
+
+            <div class="subsection">
+              <div class="subsection-title">日历触发 — 约定短信（固定，先于 Scene 1）</div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Ethan（短信）</div>
+                <div class="dialogue-text">"Hey, you're still good for tonight, right? 5pm at Velour Room."</div>
+              </div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="dialogue-text">"Sorry—remind me, where is that again?"</div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Ethan</div>
+                <div class="dialogue-text">"You okay? We already booked it. Same place we talked about yesterday."</div>
+              </div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="dialogue-text">"Right… yeah. I'll head out around five."</div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Ethan</div>
+                <div class="dialogue-text">"Alright. I'll see you there."</div>
               </div>
             </div>
+
+            <div class="subsection">
+              <div class="subsection-title">出门前短信（Scene 1 触发）</div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Ethan（短信）</div>
+                <div class="dialogue-text">"Are you heading there yet? I am on my way"</div>
+              </div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo 回复选项</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"not yet"</span></div>
+                  <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"can you sent me the address again?"</span></div>
+                  <div class="choice-opt"><span class="choice-label">C !</span><span class="choice-text">"who are you" → 章节失败</span></div>
+                </div>
+              </div>
+              <div class="dialogue-block npc">
+                <div class="dialogue-speaker">Ethan</div>
+                <div class="dialogue-text">"see you in 15 :)" *address</div>
+              </div>
+            </div>
+
             <div class="alert alert-warn">
               <div class="alert-icon">!</div>
-              <div class="alert-text">左上角提示弹出："点击门以前往晚餐，或继续搜索房间"</div>
+              <div class="alert-text">左上角提示弹出："点击门以前往晚餐，或继续搜索房间"。点击出门后自动转场。</div>
             </div>
           </div>
         </div>
 
+        <!-- Scene 2 -->
         <div class="scene-card">
           <div class="scene-header" onclick="toggleScene(this)">
             <span class="scene-num">S2</span>
-            <span class="scene-title">晚餐对话 — Ethan</span>
-            <span class="scene-duration">~2 hrs in-game</span>
+            <span class="scene-title">晚餐对话 — Ethan（Velour Room）</span>
+            <span class="scene-duration">17:30 – 19:30</span>
             <span class="scene-toggle">▶</span>
           </div>
           <div class="scene-body">
-            <div class="dialogue-block note">
-              <div class="dialogue-speaker">Designer Note — Dialogue Architecture</div>
-              <div class="dialogue-text">对话树有多条通路（以 ①②③④⑤⑥⑦ 节点标记），不同选择透露不同程度的真相。以下为主要分支骨架，完整对话见原始文件第三章。</div>
-            </div>
 
             <div class="subsection">
-              <div class="subsection-title">开场对话（固定）</div>
+              <div class="subsection-title">开场寒暄（固定）</div>
               <div class="dialogue-block npc">
-                <div class="dialogue-speaker">Ethan</div>
-                <div class="dialogue-text">"I'm not late, am I?" (微笑)</div>
+                <div class="dialogue-speaker">Ethan（微笑）</div>
+                <div class="dialogue-text">"I'm not late, am I?"</div>
               </div>
-              <div class="dialogue-block">
-                <div class="dialogue-speaker">Mateo</div>
-                <div class="dialogue-text">"Right on time. You picked a quiet place."</div>
-              </div>
-              <p class="prose">对话进入日常寒暄 → 点菜 → Ethan 提起 Victor 话题，触发关键分支。</p>
-            </div>
-
-            <div class="subsection">
-              <div class="subsection-title">Victor 话题分支</div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo</div><div class="dialogue-text">"Right on time. You picked a quiet place."</div></div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"Thought you'd like it. Work still keeping you that busy?"</div></div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo</div><div class="dialogue-text">"Yeah. But being busy's good. Keeps your mind off things."</div></div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"You? Not thinking? Now that's hard to believe."</div></div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo</div><div class="dialogue-text">"That's because all you remember is me fussing over everything."</div></div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"Feels like forever since we sat across from each other like this."</div></div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo（推测中性答案）</div><div class="dialogue-text">"Hmm… a long time, I guess. Long enough that neither of us really remembers."</div></div>
               <div class="dialogue-block npc">
-                <div class="dialogue-speaker">Ethan</div>
-                <div class="dialogue-text">"By the way… have you heard about Victor?"</div>
+                <div class="dialogue-speaker">Ethan ①</div>
+                <div class="dialogue-text">"I remember. Last year's class reunion—you said you didn't feel like going, so it was just the two of us. We ended up at that little café behind the old arcade we used to haunt as kids. Compared to then, you've grown a bit more… mature, Doctor."</div>
               </div>
               <div class="dialogue-block choice">
-                <div class="dialogue-speaker">Mateo Response</div>
+                <div class="dialogue-speaker">Mateo</div>
                 <div class="choice-options">
-                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Victor. Who's that?" → Ethan 察觉异常，逼问，最终确认失忆 → 节点 ①</span></div>
-                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"I saw… it says he's missing." → 话题深入，涉及是否有人"消除"他 → 节点分叉</span></div>
+                  <div class="choice-opt"><span class="choice-label">→</span><span class="choice-text">"I don't know." → 回到 ① (循环)</span></div>
+                  <div class="choice-opt"><span class="choice-label">→</span><span class="choice-text">"More importantly, why don't we order first?" （转移话题）</span></div>
+                </div>
+              </div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"Hahaha, yeah, looks like you're starving."</div></div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"You're still the same—you've never been good at ordering. Every time you get the menu, you pretend to study it, but really you're just waiting for me to pick for you."</div></div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">认出我？— 分支（中文版分支，出现于 Victor 话题前）</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"我们上次这样面对面，得有多久了？" → Mateo: "太久了，我都快忘了你长什么样。" → Ethan: "是吗？那你还认得出我？"</div></div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">A !</span><span class="choice-text">"基本不能，我还是靠着手机提示和名字才想起你来的。" → Ethan: "你在开玩笑吧，医生." → end 生气</span></div>
+                  <div class="choice-opt"><span class="choice-label">B ✓</span><span class="choice-text">"当然。你换发型我都能认出来。" → 继续，进入 Victor 话题</span></div>
                 </div>
               </div>
             </div>
 
             <div class="subsection">
-              <div class="subsection-title">核心选择节点（简略）</div>
-              <div class="item-list">
-                <div class="item-row"><span class="item-name">节点 ②</span><span class="item-desc">"No matter what, you're still the person I know, Mateo. So… was it you?"</span></div>
-                <div class="item-row"><span class="item-name">节点 ③</span><span class="item-desc">"I have. I wanted him dead." → Ethan 分析道德边界 → 追问 Mateo 是否越界</span></div>
-                <div class="item-row"><span class="item-name">节点 ④</span><span class="item-desc">"No. Never." → Ethan 表示相信，但重申信任承诺</span></div>
-                <div class="item-row"><span class="item-name">节点 ⑤</span><span class="item-desc">Ethan 讲述 2008 年的血腥事件（Victor 录像勒索起因）</span></div>
-                <div class="item-row"><span class="item-name">节点 ⑥</span><span class="item-desc">"I've already buried his body." → Ethan 沉默，随后承诺保守秘密</span></div>
-                <div class="item-row"><span class="item-name">节点 ⑦</span><span class="item-desc">"It was nice seeing you today. Let's both get some sleep." → Good End</span></div>
+              <div class="subsection-title">Victor 话题入口</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"By the way… have you heard about Victor?"</div></div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Victor. Who's that?" → 失忆暴露路线（见下 §A）</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"I saw… it says he's missing." → 深入路线（见下 §B）</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Branch A: amnesia exposed -->
+            <div class="subsection">
+              <div class="subsection-title">§A — 失忆暴露路线（"Victor. Who's that?"）</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"…Right. I should've known you'd still refuse to touch any topic about him. Just speak straightforwardly—I'm not really buying this forgetful act anymore"</div></div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo</div><div class="dialogue-text">"…Seems like I've forgotten a lot."</div></div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"You really don't remember? Mateo, you look exhausted."</div></div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo</div><div class="dialogue-text">"I don't remember."</div></div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"Wait… do you mean…Mateo, have you become amnesic?"</div></div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo</div><div class="dialogue-text">"I think so."</div></div>
+              <p class="prose" style="font-size:12px;color:var(--accent)">→ END（失忆确认）</p>
+              <div class="alert alert-info" style="margin-top:8px"><div class="alert-icon">i</div><div class="alert-text">中文版 §A 延伸：Ethan 追问"连他长什么样都想不起来吗？"→ 回忆冬天溜冰的小河 → Ethan: "但有些事，忘了不代表它们消失了。" → Mateo: "你是在提醒我，还是警告我？" → Ethan: "随你怎么理解。" 面无表情</div></div>
+            </div>
+
+            <!-- Branch B: deeper route -->
+            <div class="subsection">
+              <div class="subsection-title">§B — 深入路线（"I saw… it says he's missing."）</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"'Missing'—sometimes that's just a softer way of putting it, don't you think? After all… Victor back then… you also said he wasn't just trouble"</div></div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo</div><div class="dialogue-text">"He didn't seem like the friendly type. The details… I can't remember exactly."</div></div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"If one day he were gone… would you feel relieved? Or rather, I'm just asking… have you ever thought it would be better if someone could just get rid of him?"</div></div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"…" （可疑的沉默）→ Ethan 追问 → 见 §B-1</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"I don't know. Do you?"（战术性反问）→ 见 §B-2</span></div>
+                </div>
               </div>
             </div>
 
             <div class="subsection">
-              <div class="subsection-title">道具触发对话（可选）</div>
-              <p class="prose">将物品从背包递给 Ethan，触发独立道具剧情，结束后回到主线选择界面。</p>
-              <div class="item-list">
-                <div class="item-row"><span class="item-name">《梦的解析》</span><span class="item-desc">Ethan: "Freud? I didn't know you were the analyzing type." → 三条 Mateo 回应，各引出 Ethan 对"欲望"和"故事"的隐晦表达</span></div>
-                <div class="item-row"><span class="item-name">合照</span><span class="item-desc">Ethan: "You still kept this… wow." → 三条 Mateo 回应，揭露对这段友谊重要程度的不同态度</span></div>
-                <div class="item-row"><span class="item-name">小瓶香水</span><span class="item-desc">Ethan: "This scent… I actually really like it." → 三条 Mateo 回应（猜香调、送他、描述成分），各有深意</span></div>
-                <div class="item-row"><span class="item-name">水晶糖</span><span class="item-desc">Ethan 主动给 Mateo → "A little sweet for the end of the world." → 三条选择，进入第四章</span></div>
+              <div class="subsection-title">§B-1 — 沉默后 Ethan 追问</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"What's wrong? Something on your mind? It's okay, Mateo, you don't have to hold back with me. You know what I've always said— even if you choose to stand against the world, I'll still be the last person on this planet you can trust."</div></div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">→③</span><span class="choice-text">"I have. I wanted him dead." → 见节点 ③</span></div>
+                  <div class="choice-opt"><span class="choice-label">→④</span><span class="choice-text">"No. Never." → 见节点 ④</span></div>
+                </div>
               </div>
             </div>
+
+            <div class="subsection">
+              <div class="subsection-title">§B-2 — 战术反问后（"I don't know. Do you?"）</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"He did what he did to me… If I told you I didn't, would you believe me? If I told you I did, would you think I'm beyond redemption? Heh… you see, a question like that is a trap all by itself. But one thing is true — no matter what happens to Victor, I don't want to lose you. Nothing else matters."</div></div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo</div><div class="dialogue-text">"What he did to you? You mean… from when we were kids?"</div></div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan ⑤</div><div class="dialogue-text">"2008… do you remember? That day after school, I called you — crying like an idiot." / "There was blood everywhere. When you showed up, you didn't ask a single question, just helped me clean it all up, even picked up every shard of glass for me."</div></div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"I'm… sorry."</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"Could you tell me more about what happened? My memory's a bit… hazy."</span></div>
+                </div>
+              </div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"No… I'd rather not get into the details. I don't want to relive it. But after that day, I knew — you were the only one who'd stand by me."</div></div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo</div><div class="dialogue-text">"Victor did it?"</div></div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"He didn't just do it — he filmed it. He's been blackmailing me with it ever since." / "But now… he won't have the chance anymore — right?"</div></div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"I think he's probably as good as dead. You don't need to worry anymore." → Ethan: "Thank you, Doctor." → ⑦</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"Until the death report comes out, I can't guarantee anything. Protect yourself." → Ethan: "Very cautious, Doctor." → ⑦</span></div>
+                  <div class="choice-opt"><span class="choice-label">3</span><span class="choice-text">"You don't have to live in the shadows anymore. …I've already buried his body." → ⑥</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Node 3 -->
+            <div class="subsection">
+              <div class="subsection-title">节点 ③ — "I have. I wanted him dead."</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"Thank you for being so candid with me, especially at a time like this." / "Thinking that way is normal. If it were me, after everything he did, I'd have had those moments too—wishing he'd vanish from the world." / "We all have dark sides. To avoid being swallowed by the shadows that cling to us, humans are granted the right to do as they please in their imagination." / "But the line between imagination and reality… that's a line you must never cross." / "You're too calm… you haven't been drifting too close to that line, have you?"</div></div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Line? Victor walked straight onto everyone's lines. If anyone struck, they merely beat me to it." → Ethan: "Heh… you really do hate him." → ②</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"If I really crossed that line… what would you do?" → ②</span></div>
+                  <div class="choice-opt"><span class="choice-label">3</span><span class="choice-text">"Are you suspecting me?" → Ethan: "I just want to make sure you're okay… you look a bit worn down, my friend." → ②</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Node 2 -->
+            <div class="subsection">
+              <div class="subsection-title">节点 ② — "So… was it you?"</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan ②</div><div class="dialogue-text">"No matter what, you're still the person I know, Mateo. So… was it you?"</div></div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1 →⑥</span><span class="choice-text">"I've already buried his body."</span></div>
+                  <div class="choice-opt"><span class="choice-label">2 →④</span><span class="choice-text">"No. Never."</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Node 6 -->
+            <div class="subsection">
+              <div class="subsection-title">节点 ⑥ — "I've already buried his body."</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"……"</div></div>
+              <div class="dialogue-block"><div class="dialogue-speaker">Mateo</div><div class="dialogue-text">"I don't know what I did. The body was in my car."</div></div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"Thank you for telling me." / "Let's leave it here for today, this is not a safe place to talk anymore. Also…we both need some time to think." / "I'll guard this secret. We will find a way to deal with it. You… watch yourself out there."</div></div>
+              <p class="prose" style="font-size:12px;color:var(--accent)">→ END</p>
+            </div>
+
+            <!-- Node 4 -->
+            <div class="subsection">
+              <div class="subsection-title">节点 ④ — "No. Never."（撇清自己）</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"You seem… different. But… well, I believe you. Still, no matter how many times it takes, I'll keep reminding you, Mateo — you don't have to hold anything back with me. You know what I've always said: even if you choose to stand against the world, I'll still be the last person on this planet you can trust."</div></div>
+              <p class="prose" style="font-size:12px">→ ⑦</p>
+            </div>
+
+            <!-- Node 7 -->
+            <div class="subsection">
+              <div class="subsection-title">节点 ⑦ — Good End</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan ⑦</div><div class="dialogue-text">"It was nice seeing you today. It's getting late—I think we both should go back get some sleep."</div></div>
+              <p class="prose" style="font-size:12px;color:var(--accent)">→ END（Good End）</p>
+            </div>
+
+            <!-- Chinese-version extra branches -->
+            <div class="subsection">
+              <div class="subsection-title">§C — 中文版额外分支（Choice B 下 Split ONE）</div>
+              <p class="prose" style="font-size:12px">Mateo: "哈 是吗？他应该常讨厌。但是都说坏人遗臭万年他估计死不了." → Ethan: "应该？你一直在这个城市里，真的没有遇见过他？" 疑惑</p>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"可能是我运气太好了，真的没有见过。" → Ethan: "一直没有？不是吧？" end 疑惑</span></div>
+                  <div class="choice-opt"><span class="choice-label">B ✓</span><span class="choice-text">"我见过，你知道的。" → Ethan: "对啊，不好意思最近忙得有些记忆混乱。" → 转移话题 → Mateo: "我欠你几顿饭，还不算利息。" → Good End 大幅度微笑（无 Ethan 过去信息）</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">§D — 中文版额外分支（Choice B 下 Split TWO → Ethan 独白后）</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"真希望他能永远消失，他快把我折磨的受不了了。"</div></div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">→</span><span class="choice-text">"那你想怎样？杀掉他吗？" 面无表情 → Ethan 激动 → Mateo: "你觉得我会出卖你吗？" → Ethan: "我想不会。只是我好奇——你变得更冷静了，以前你可不是这样。" → Good End（为老同学干杯）</span></div>
+                  <div class="choice-opt"><span class="choice-label">→</span><span class="choice-text">"阴影，你是说，小时候的事？" → Ethan 讲述 2008 血腥事件 → Victor 录像勒索揭露 → 三支回应（§D-2）</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">§D-2 — 2008 事件后 Victor 录像勒索揭露（中文版）</div>
+              <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"不过现在，他没机会了——对吧？"</div></div>
+              <div class="dialogue-block choice">
+                <div class="dialogue-speaker">Mateo</div>
+                <div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"呃，我不清楚" → Ethan: "不清楚？Mateo，你可比我清楚得多。" → 追问去向 → Mateo: "我……不记得了。" → Ethan: "呵，连自己都不记得了吗？真是意外。"</span></div>
+                  <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"嗯，也许吧。…那你还好吗？" → Ethan: "怕哪天，你连我的事都不问了。" → end</span></div>
+                  <div class="choice-opt"><span class="choice-label">C</span><span class="choice-text">"应该是我杀了他。" → Mateo: "我失忆前……不知道自己做了什么。等我醒过来，就发现尸体在我的车子里。" → Ethan: "完美…意外也好，总比我担心的要干净利落。" / "既然已经发生了，那我们先考虑怎么处理他吧。今天就先这样吧，我需要时间想一想。"</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Item-triggered dialogues -->
+            <div class="subsection">
+              <div class="subsection-title">道具触发对话（随时可触发，结束后回到主线）</div>
+              <p class="prose" style="font-size:12px">将物品从背包递给 Ethan，触发道具剧情；剧情结束回到玩家选择界面。</p>
+
+              <div class="mechanic-box" style="margin-top:12px">
+                <div class="mechanic-title">《梦的解析》（Ethan：疑惑沉思）</div>
+                <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"Freud? I didn't know you were the analyzing type."</div></div>
+                <div class="dialogue-block choice"><div class="dialogue-speaker">Mateo</div><div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Well, everyone's dreams are just metaphors for something they want, right?" → Ethan: "So… what do you want, Mateo?" (疑惑) → 三条追加回应（无聊的生活 / 时间机器 / 和平和一只狗）</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"Sometimes dreams help you figure out what you're afraid to say out loud." → Ethan: "I think some things are better left unsaid." (微笑) → 三条追加回应</span></div>
+                  <div class="choice-opt"><span class="choice-label">3</span><span class="choice-text">"I wanted to understand myself. Or maybe forget some things." → Ethan: "Don't we all. That's why I write fiction." (微笑) → 三条追加回应</span></div>
+                </div></div>
+              </div>
+
+              <div class="mechanic-box" style="margin-top:12px">
+                <div class="mechanic-title">合照（Ethan：惊讶）</div>
+                <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"You still kept this… wow. I barely even remember when this was taken."</div></div>
+                <div class="dialogue-block choice"><div class="dialogue-speaker">Mateo</div><div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"It's one of the few memories that ever felt real." → Ethan: "You really valued all that, huh? I didn't know it meant so much to you…" (笑) → 三条追加回应</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"It just ended up stuck to the wall, I guess." → Ethan: "You've always been good at pretending things don't matter." (无表情) → 三条追加回应</span></div>
+                  <div class="choice-opt"><span class="choice-label">3</span><span class="choice-text">"You were always the prettier one. I needed proof I had cool friends." → Ethan: "Still fishing for compliments, huh?" (挑眉) → 三条追加回应</span></div>
+                </div></div>
+              </div>
+
+              <div class="mechanic-box" style="margin-top:12px">
+                <div class="mechanic-title">小瓶香水（Ethan：惊讶）</div>
+                <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"This scent… I actually really like it. What is it?"</div></div>
+                <div class="dialogue-block choice"><div class="dialogue-speaker">Mateo</div><div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">1</span><span class="choice-text">"Take a guess. What does it smell like to you now?" → Ethan: "Still smells like a hospital hallway. Cold, but clean. Kind of like you." (眯眼笑) → 两条追加回应</span></div>
+                  <div class="choice-opt"><span class="choice-label">2</span><span class="choice-text">"Just something I found in a drawer. If you want it, take it." → Ethan: "You sure? Don't want me smelling like you?" (小幅度惊讶+微笑) → 三条追加回应</span></div>
+                  <div class="choice-opt"><span class="choice-label">3</span><span class="choice-text">"Top notes are neroli and bergamot. Then it dries down into cedar and white musk." → Ethan: "You always talk like that. Like everything needs to be catalogued." (失望 subtle) → 三条追加回应</span></div>
+                </div></div>
+                <p class="prose" style="font-size:12px;margin-top:6px">无关紧要物品时 Ethan 随机回应："Is this supposed to mean something, or are you just bored?" / "Okay... and what exactly am I supposed to do with this?" / "You're not seriously expecting me to keep this, right?" / "Why are you giving this to me?"</p>
+              </div>
+
+              <div class="mechanic-box" style="margin-top:12px">
+                <div class="mechanic-title">水晶糖 — Ethan 主动给 Mateo（眯眼笑）→ 进入第四章</div>
+                <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"Oh — I have this in my pocket. A little sweet for the end of the world. Want one?"</div></div>
+                <div class="dialogue-block choice"><div class="dialogue-speaker">Mateo</div><div class="choice-options">
+                  <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"You always take those with you." → Ethan: "Old habits. Some people hoard meds. I hoard sugar."</span></div>
+                  <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"No thanks" → Ethan: "Didn't peg you for someone who turned down free comfort."</span></div>
+                  <div class="choice-opt"><span class="choice-label">C</span><span class="choice-text">"Thanks." → Ethan: "Wow, no lecture about cavities?"</span></div>
+                </div></div>
+                <div class="dialogue-block npc"><div class="dialogue-speaker">Ethan</div><div class="dialogue-text">"Choose a flavor…"</div></div>
+                <p class="prose" style="font-size:12px;color:var(--accent)">→ 进入第四章</p>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
