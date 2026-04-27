@@ -168,7 +168,6 @@
   .breadcrumb span { color: var(--accent); }
 
   .save-btn {
-    margin-left: auto;
     background: var(--accent);
     color: var(--bg);
     border: none;
@@ -186,6 +185,143 @@
   .save-btn:hover { opacity: 0.85; }
 
   .save-btn.saved { background: var(--accent2); }
+
+  .topbar-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .save-btn { margin-left: 0; }
+
+  /* AUTH */
+  .auth-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.15s;
+  }
+  .auth-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .auth-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .auth-badge .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent2);
+    flex-shrink: 0;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 32px;
+    width: 440px;
+    max-width: 92vw;
+  }
+  .modal-title {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .modal-desc {
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 20px;
+    line-height: 1.7;
+  }
+  .modal-desc a { color: var(--accent3); text-decoration: none; }
+  .modal-desc a:hover { text-decoration: underline; }
+  .modal-desc code {
+    font-family: var(--mono);
+    background: var(--bg4);
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 11px;
+  }
+  .modal-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    outline: none;
+  }
+  .modal-input:focus { border-color: var(--accent); }
+  .modal-error {
+    font-size: 11px;
+    color: var(--danger);
+    margin-bottom: 12px;
+    min-height: 16px;
+  }
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+
+  .request-banner {
+    background: rgba(123,154,184,0.07);
+    border: 1px solid rgba(123,154,184,0.18);
+    border-radius: 6px;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .request-banner button {
+    color: var(--accent3);
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 12px;
+    padding: 0;
+  }
+  .request-banner button:hover { opacity: 0.8; }
 
   .content {
     padding: 40px 48px;
@@ -809,7 +945,15 @@
 <div class="main">
   <div class="topbar">
     <div class="breadcrumb" id="breadcrumb">BLACKOUT / <span>Overview</span></div>
-    <button class="save-btn" id="saveBtn" onclick="saveAll()">Save All</button>
+    <div class="topbar-right">
+      <div id="authBadge" class="auth-badge" style="display:none">
+        <div class="dot"></div>
+        <span id="authUser">Editor</span>
+      </div>
+      <button class="auth-btn" id="loginBtn" onclick="showLoginModal()">Login</button>
+      <button class="auth-btn" id="logoutBtn" onclick="logout()" style="display:none">Logout</button>
+      <button class="save-btn" id="saveBtn" onclick="saveAll()" style="display:none">Save All</button>
+    </div>
   </div>
 
   <div class="content">
@@ -1760,6 +1904,11 @@
     </div>
 
     <!-- ===== CHAPTER 5-8 EDIT AREAS ===== -->
+    <div class="request-banner" id="requestBanner" style="display:none">
+      <span>👁 You are viewing in read-only mode.</span>
+      <button onclick="requestAccess()">Request edit access →</button>
+    </div>
+
     <div class="page" id="page-ch5-edit">
       <div class="page-title">Chapter 5 <span style="color:var(--text3);font-size:14px;font-family:var(--sans);font-weight:400">— Draft Area</span></div>
       <div class="page-meta"><span class="tag tag-chapter">CH 5</span><span class="tag" style="background:rgba(92,92,88,0.1);color:var(--text3);border:1px solid var(--border)">DRAFT</span></div>
@@ -1823,6 +1972,24 @@
 
   </div><!-- end content -->
 </div><!-- end main -->
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="loginModal" onclick="handleModalClick(event)">
+  <div class="modal">
+    <div class="modal-title">Editor Login</div>
+    <div class="modal-desc">
+      Enter a GitHub Personal Access Token (classic) with <code>repo</code> scope.<br><br>
+      <a href="https://github.com/settings/tokens/new?scopes=repo&description=vestigeLeveldesign-editor" target="_blank">Generate a token on GitHub →</a><br><br>
+      Your token is stored only in your browser and sent directly to GitHub's API — never to any third party.
+    </div>
+    <input class="modal-input" id="tokenInput" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" onkeydown="if(event.key==='Enter')loginWithToken()" />
+    <div class="modal-error" id="tokenError"></div>
+    <div class="modal-actions">
+      <button class="auth-btn" onclick="hideLoginModal()">Cancel</button>
+      <button class="save-btn" id="loginConfirmBtn" onclick="loginWithToken()">Login</button>
+    </div>
+  </div>
+</div>
 
 <script>
   const pageMap = {
@@ -1897,39 +2064,221 @@
     loadSection(ch, `s${idx}`);
   }
 
+  // ── GitHub config ──────────────────────────────────────────────────────────
+  const REPO_OWNER = 'NianhanGuo';
+  const REPO_NAME  = 'vestigeLeveldesign';
+  const DATA_FILE  = 'data.json';
+
+  let authToken    = null;
+  let authUsername = null;
+
+  // ── Auth ───────────────────────────────────────────────────────────────────
+  function showLoginModal() {
+    document.getElementById('loginModal').classList.add('open');
+    setTimeout(() => document.getElementById('tokenInput').focus(), 50);
+  }
+
+  function hideLoginModal() {
+    document.getElementById('loginModal').classList.remove('open');
+    document.getElementById('tokenInput').value = '';
+    document.getElementById('tokenError').textContent = '';
+  }
+
+  function handleModalClick(e) {
+    if (e.target === document.getElementById('loginModal')) hideLoginModal();
+  }
+
+  async function loginWithToken() {
+    const token = document.getElementById('tokenInput').value.trim();
+    if (!token) return;
+    const btn = document.getElementById('loginConfirmBtn');
+    btn.textContent = 'Verifying…';
+    btn.disabled = true;
+    const ok = await validateAndApplyToken(token, true);
+    btn.textContent = 'Login';
+    btn.disabled = false;
+    if (ok) hideLoginModal();
+  }
+
+  async function validateAndApplyToken(token, showError) {
+    try {
+      const [repoRes, userRes] = await Promise.all([
+        fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}`, {
+          headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
+        }),
+        fetch('https://api.github.com/user', {
+          headers: { Authorization: `token ${token}` }
+        })
+      ]);
+      if (!repoRes.ok || !userRes.ok) throw new Error('bad response');
+      const repo = await repoRes.json();
+      if (!repo.permissions || !repo.permissions.push) throw new Error('no write access');
+      const user = await userRes.json();
+      authToken    = token;
+      authUsername = user.login;
+      localStorage.setItem('blackout_auth_token', token);
+      setEditMode(true);
+      return true;
+    } catch (e) {
+      authToken = null;
+      localStorage.removeItem('blackout_auth_token');
+      setEditMode(false);
+      if (showError) document.getElementById('tokenError').textContent = 'Invalid token or no write access to this repo.';
+      return false;
+    }
+  }
+
+  function logout() {
+    authToken    = null;
+    authUsername = null;
+    localStorage.removeItem('blackout_auth_token');
+    setEditMode(false);
+  }
+
+  function setEditMode(enabled) {
+    document.getElementById('saveBtn').style.display   = enabled ? '' : 'none';
+    document.getElementById('loginBtn').style.display  = enabled ? 'none' : '';
+    document.getElementById('logoutBtn').style.display = enabled ? '' : 'none';
+    const badge = document.getElementById('authBadge');
+    badge.style.display = enabled ? 'flex' : 'none';
+    if (authUsername) document.getElementById('authUser').textContent = authUsername;
+
+    document.querySelectorAll('.edit-content, .edit-title-input').forEach(el => {
+      el.disabled = !enabled;
+      el.style.opacity = enabled ? '1' : '0.6';
+      el.style.cursor  = enabled ? '' : 'not-allowed';
+    });
+    document.querySelectorAll('.edit-btn.primary').forEach(btn => {
+      btn.style.display = enabled ? '' : 'none';
+    });
+    document.querySelectorAll('[onclick^="addScene"]').forEach(btn => {
+      btn.style.display = enabled ? '' : 'none';
+    });
+    const banner = document.getElementById('requestBanner');
+    if (banner) banner.style.display = enabled ? 'none' : 'flex';
+  }
+
+  function requestAccess() {
+    const subject = encodeURIComponent('Request Editor Access — BLACKOUT Level Design');
+    const body    = encodeURIComponent(
+      'Hi,\n\nI would like to request editor access to the BLACKOUT level design document at:\nhttps://nianhanguo.github.io/vestigeLeveldesign/\n\nMy GitHub username: \n\nThanks!'
+    );
+    window.open(`mailto:nguo@risd.edu?subject=${subject}&body=${body}`);
+  }
+
+  // ── GitHub API data persistence ────────────────────────────────────────────
+  async function loadFromGitHub() {
+    try {
+      const url = `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/master/${DATA_FILE}?t=${Date.now()}`;
+      const res = await fetch(url);
+      if (!res.ok) return false;
+      const data = await res.json();
+      Object.entries(data).forEach(([k, v]) => localStorage.setItem(k, JSON.stringify(v)));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async function saveToGitHub() {
+    if (!authToken) return false;
+    const data = {};
+    ['ch5','ch6','ch7','ch8'].forEach(ch => {
+      const keys = ['overview'];
+      for (let i = 1; i <= sceneCounts[ch]; i++) keys.push(`s${i}`);
+      keys.forEach(key => {
+        const titleEl   = document.getElementById(`${ch}-${key}-title`);
+        const contentEl = document.getElementById(`${ch}-${key}-content`);
+        if (contentEl) {
+          data[`blackout_${ch}_${key}`] = {
+            title:   titleEl ? titleEl.value : '',
+            content: contentEl.value,
+            saved:   new Date().toISOString()
+          };
+        }
+      });
+    });
+
+    const json    = JSON.stringify(data, null, 2);
+    const encoded = btoa(unescape(encodeURIComponent(json)));
+
+    let sha = null;
+    try {
+      const existing = await fetch(
+        `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`,
+        { headers: { Authorization: `token ${authToken}`, Accept: 'application/vnd.github.v3+json' } }
+      );
+      if (existing.ok) sha = (await existing.json()).sha;
+    } catch (e) {}
+
+    const body = {
+      message: `Update design document (${new Date().toLocaleString()})`,
+      content: encoded
+    };
+    if (sha) body.sha = sha;
+
+    const res = await fetch(
+      `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_FILE}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${authToken}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      }
+    );
+    return res.ok;
+  }
+
+  // ── Section save/load ──────────────────────────────────────────────────────
   function saveSection(ch, key) {
-    const titleEl = document.getElementById(`${ch}-${key}-title`);
+    const titleEl   = document.getElementById(`${ch}-${key}-title`);
     const contentEl = document.getElementById(`${ch}-${key}-content`);
     if (!contentEl) return;
     const data = {
-      title: titleEl ? titleEl.value : '',
+      title:   titleEl ? titleEl.value : '',
       content: contentEl.value,
-      saved: new Date().toISOString()
+      saved:   new Date().toISOString()
     };
     localStorage.setItem(`blackout_${ch}_${key}`, JSON.stringify(data));
-    showSaved();
   }
 
   function loadSection(ch, key) {
     const raw = localStorage.getItem(`blackout_${ch}_${key}`);
     if (!raw) return;
     try {
-      const data = JSON.parse(raw);
-      const titleEl = document.getElementById(`${ch}-${key}-title`);
+      const data      = JSON.parse(raw);
+      const titleEl   = document.getElementById(`${ch}-${key}-title`);
       const contentEl = document.getElementById(`${ch}-${key}-content`);
-      if (titleEl && data.title) titleEl.value = data.title;
+      if (titleEl   && data.title)   titleEl.value   = data.title;
       if (contentEl && data.content) contentEl.value = data.content;
-    } catch(e) {}
+    } catch (e) {}
   }
 
-  function saveAll() {
+  async function saveAll() {
     ['ch5','ch6','ch7','ch8'].forEach(ch => {
       saveSection(ch, 'overview');
-      for (let i = 1; i <= sceneCounts[ch]; i++) {
-        saveSection(ch, `s${i}`);
-      }
+      for (let i = 1; i <= sceneCounts[ch]; i++) saveSection(ch, `s${i}`);
     });
-    showSaved();
+
+    const btn = document.getElementById('saveBtn');
+    if (authToken) {
+      btn.textContent = 'Saving…';
+      btn.disabled = true;
+      const ok = await saveToGitHub();
+      btn.disabled = false;
+      if (ok) {
+        showSaved();
+      } else {
+        btn.textContent = 'Save failed ✗';
+        btn.style.background = 'var(--danger)';
+        setTimeout(() => { btn.textContent = 'Save All'; btn.style.background = ''; }, 3000);
+      }
+    } else {
+      showSaved();
+    }
   }
 
   function showSaved() {
@@ -1942,10 +2291,18 @@
     }, 2000);
   }
 
-  // Load all saved data on start
-  ['ch5','ch6','ch7','ch8'].forEach(ch => {
-    loadSection(ch, 'overview');
-  });
+  // ── Startup ────────────────────────────────────────────────────────────────
+  (async function init() {
+    await loadFromGitHub();
+    ['ch5','ch6','ch7','ch8'].forEach(ch => loadSection(ch, 'overview'));
+
+    const stored = localStorage.getItem('blackout_auth_token');
+    if (stored) {
+      await validateAndApplyToken(stored, false);
+    } else {
+      setEditMode(false);
+    }
+  })();
 </script>
 </body>
 </html>
