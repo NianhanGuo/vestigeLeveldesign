@@ -1604,7 +1604,9 @@
               <div class="subsection-title">可探索物品（一楼客厅/餐厅）</div>
               <div class="item-list">
                 <div class="item-row"><span class="item-name">初中毕业照片</span><span class="item-desc">后排一胖男孩头部有破损，叙事线索</span></div>
-                <div class="item-row"><span class="item-name">电视 + 遥控器</span><span class="item-desc">三个频道：天气预报、本地新闻（Victor 失踪）、广告</span></div>
+                <div class="item-row"><span class="item-name">电视遥控器</span><span class="item-desc">用于换台</span></div>
+                <div class="item-row"><span class="item-name">电视</span><span class="item-desc">三个频道：天气预报、本地新闻（Victor 失踪）、广告</span></div>
+                <div class="item-row"><span class="item-name">广告信件</span><span class="item-desc">普通邮件，叙事点缀</span></div>
                 <div class="item-row"><span class="item-name">医学书籍</span><span class="item-desc">几本医学方面的书，角色背景暗示</span></div>
                 <div class="item-row"><span class="item-name">日历</span><span class="item-desc">4月3日有手术，4月17日是 Mateo 生日</span></div>
                 <div class="item-row"><span class="item-name">手机</span><span class="item-desc">锁屏显示今天为 4月3日，密码 0417。解锁后可用 Messages，目前无重要信息。</span><span class="item-effect req">解锁密码</span></div>
@@ -1655,6 +1657,18 @@
 
             <div class="dialogue-block npc">
               <div class="dialogue-speaker">Officer Austin</div>
+              <div class="dialogue-text">"I'm Officer Austin. We're following up on a missing persons report. A man named Victor Reyes. According to our records, he lives just around the corner from here. Does that name ring a bell?"</div>
+            </div>
+            <div class="dialogue-block choice">
+              <div class="dialogue-speaker">Mateo Response</div>
+              <div class="choice-options">
+                <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"Yeah, I've heard of him. What about it?"</span></div>
+                <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"Not really. Could you elaborate a bit?"</span></div>
+              </div>
+            </div>
+
+            <div class="dialogue-block npc">
+              <div class="dialogue-speaker">Officer Austin</div>
               <div class="dialogue-text">"He's been missing for four days. Have you seen him recently, or do you have any idea where he might've gone?"</div>
             </div>
             <div class="dialogue-block choice">
@@ -1662,8 +1676,19 @@
               <div class="choice-options">
                 <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"I haven't seen him this month…" → 安全</span></div>
                 <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"He wasn't exactly known for being easy to get along with…" → 安全</span></div>
-                <div class="choice-opt"><span class="choice-label">C</span><span class="choice-text">"He always had visitors, but that's none of my business." → 安全</span></div>
-                <div class="choice-opt"><span class="choice-label">D !</span><span class="choice-text">"Oh… I killed him…" → 信任 -3，被列为监控对象</span></div>
+                <div class="choice-opt"><span class="choice-label">C !</span><span class="choice-text">"Oh… I killed him…" → 信任 -3，被列为监控对象</span></div>
+              </div>
+            </div>
+
+            <div class="dialogue-block npc">
+              <div class="dialogue-speaker">Officer Austin</div>
+              <div class="dialogue-text">"Have you noticed anyone visiting him recently, or heard any arguments?"</div>
+            </div>
+            <div class="dialogue-block choice">
+              <div class="dialogue-speaker">Mateo Response</div>
+              <div class="choice-options">
+                <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"Sorry Sir. No clue." → 安全</span></div>
+                <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"He always had visitors, but that's none of my business." → 安全</span></div>
               </div>
             </div>
 
@@ -1677,6 +1702,22 @@
                 <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"We used to be in the same middle school…" → 安全，警察认为"有趣"</span></div>
                 <div class="choice-opt"><span class="choice-label">B !</span><span class="choice-text">"We're neighbors. That's all." → 信任 -1（警方已查到共同中学记录）</span></div>
               </div>
+            </div>
+
+            <div class="dialogue-block npc">
+              <div class="dialogue-speaker">Officer Austin</div>
+              <div class="dialogue-text">"I'm taking note of that. Thanks for your cooperation." / "If anything comes to mind, give me a call. Even the smallest detail could matter."</div>
+            </div>
+            <div class="dialogue-block choice">
+              <div class="dialogue-speaker">Mateo Response</div>
+              <div class="choice-options">
+                <div class="choice-opt"><span class="choice-label">A</span><span class="choice-text">"Got it. I'll let you know if I think of anything."</span></div>
+                <div class="choice-opt"><span class="choice-label">B</span><span class="choice-text">"I doubt I'll be much help, but sure."</span></div>
+              </div>
+            </div>
+            <div class="dialogue-block npc">
+              <div class="dialogue-speaker">Officer Austin</div>
+              <div class="dialogue-text">"Let's hope that's true."</div>
             </div>
           </div>
         </div>
@@ -1695,14 +1736,15 @@
               <div class="item-list">
                 <div class="item-row"><span class="item-name">一楼阳台</span><span class="item-desc">栀子花（可摘）、风铃、烟头</span></div>
                 <div class="item-row"><span class="item-name">一楼厕所</span><span class="item-desc">垃圾桶内撕碎的纸、洗手台上塑胶手套、抹布</span></div>
-                <div class="item-row"><span class="item-name">一楼车库</span><span class="item-desc">Mateo 自言自语："something smells horrible here" — 触发 Scene 4 条件</span><span class="item-effect req">触发器</span></div>
+                <div class="item-row"><span class="item-name">一楼车库</span><span class="item-desc">Mateo 自言自语："something smells horrible here" — 触发 Scene 4 条件；车后备箱内有 Victor 的尸体；前座有未喝完的水瓶</span><span class="item-effect req">触发器</span></div>
+                <div class="item-row"><span class="item-name">回收垃圾箱</span><span class="item-desc">车库旁，叙事点缀</span></div>
               </div>
             </div>
 
             <div class="subsection">
               <div class="subsection-title">二楼各区域（叙事道具为主）</div>
               <div class="item-list">
-                <div class="item-row"><span class="item-name">主卧室</span><span class="item-desc">安眠药（半瓶）、《梦的解析》（贴满便签）、空药瓶（抗焦虑药）、无电池手电筒、医学课本（有血渍）、合照（反复折叠）、锁上的抽屉（第二章无密码）、电脑（未解锁，第二章不可用）、旧相册、门后纸条"Don't open if you're not me."</span></div>
+                <div class="item-row"><span class="item-name">主卧室</span><span class="item-desc">安眠药（半瓶）、《梦的解析》（贴满便签）、空药瓶（抗焦虑药）、无电池手电筒、医学课本（有血渍）、合照（反复折叠）、锁上的抽屉（第二章无密码）、电脑（Ethan 的聊天记录："I saw him again today. I feel sick every time… I just wish he would vanish… Maybe I am the one who should disappear after all these."）、旧相册、门后纸条"Don't open if you're not me."</span></div>
                 <div class="item-row"><span class="item-name">卧室 2（Ethan 临时房间）</span><span class="item-desc">《麦田里的守望者》、折叠整齐的衣物、Ethan 留言："You always protect me..."、紫外线灯</span><span class="item-effect req">Key Item（藏尸用）</span></div>
                 <div class="item-row"><span class="item-name">洗衣房</span><span class="item-desc">手写衣物清单、拖把（藏尸道具）、便签"记得检查口袋"</span></div>
                 <div class="item-row"><span class="item-name">储藏间</span><span class="item-desc">布质小熊（右耳残破）、旧收音机、未标注录像带、黑色垃圾袋（一大卷）</span><span class="item-effect req">Key Item（藏尸用）</span></div>
@@ -1747,23 +1789,40 @@
             </div>
 
             <div class="subsection">
-              <div class="subsection-title">记忆碎片拼凑谜题</div>
-              <p class="prose">进入眩晕后，展示三个记忆碎片。玩家按时间顺序排列并 Submit。</p>
-              <div class="alert alert-danger">
-                <div class="alert-icon">!</div>
-                <div class="alert-text">第一次排列错误 → 自首剧情（死亡）。第二次错误 → 无剧情直接死亡，进入下次尝试。</div>
-              </div>
-            </div>
-
-            <div class="subsection">
               <div class="subsection-title">主要抉择</div>
               <div class="dialogue-block choice">
                 <div class="dialogue-speaker">Player Choice</div>
                 <div class="choice-options">
-                  <div class="choice-opt"><span class="choice-label">✗</span><span class="choice-text">自首 (Confess) — 拨打 Officer Austin → 游戏结束（成就：诚实凶手）</span></div>
-                  <div class="choice-opt"><span class="choice-label">✓</span><span class="choice-text">隐瞒 (Lie and hide) — 左上角弹出任务："hide body" → 进入 Scene 5</span></div>
+                  <div class="choice-opt"><span class="choice-label">✗</span><span class="choice-text">自首 (Confess)</span></div>
+                  <div class="choice-opt"><span class="choice-label">✓</span><span class="choice-text">隐瞒 (Hide)</span></div>
                 </div>
               </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">自首路线 — Confess</div>
+              <p class="prose">Mateo 拨打 Officer Austin 电话：</p>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo（电话独白）</div>
+                <div class="dialogue-text">"Hey, Officer… Officer Austin. I think I found… Victor's body. And… I think I did it."</div>
+              </div>
+              <div class="alert alert-danger" style="margin-top:8px">
+                <div class="alert-icon">!</div>
+                <div class="alert-text">游戏结束（成就：诚实凶手）</div>
+              </div>
+            </div>
+
+            <div class="subsection">
+              <div class="subsection-title">隐瞒路线 — Hide</div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo（内心独白）</div>
+                <div class="dialogue-text">"I need time. If I didn't do this… then I need to figure out who did. And if I did… then no one can ever know."</div>
+              </div>
+              <div class="dialogue-block">
+                <div class="dialogue-speaker">Mateo（内心独白）</div>
+                <div class="dialogue-text">"I need to hide the body…"</div>
+              </div>
+              <p class="prose" style="margin-top:8px">左上角弹出任务："hide body" → 进入 Scene 5</p>
             </div>
           </div>
         </div>
